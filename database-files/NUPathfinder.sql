@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS skills
 (
     name varchar(100) NOT NULL,
     description varchar(255) NOT NULL,
+    category varchar(50),
     PRIMARY KEY (name)
 );
 
@@ -67,11 +68,10 @@ CREATE TABLE IF NOT EXISTS experiences
 DROP TABLE IF EXISTS studentSkills;
 CREATE TABLE IF NOT EXISTS studentSkills
 (
-    username varchar(50) NOT NULL,
     studentID INT NOT NULL,
     name varchar(50) NOT NULL,
     proficiency varchar(50) NOT NULL,
-    PRIMARY KEY (username, name),
+    PRIMARY KEY (studentID, name),
     constraint fk_03 FOREIGN KEY (studentID) REFERENCES students(studentID),
     constraint fk_04 FOREIGN KEY (name) REFERENCES skills(name)
 );
@@ -120,30 +120,30 @@ INSERT INTO Recruiters (firstName, lastName, CompanyId)
 VALUES ('John', 'Green', 1),
        ('Emily', 'Wang', 2);
 
-INSERT INTO skills (name, description)
-VALUES ('Java', 'Knowledge of Java language and related frameworks'),
-       ('Python', 'Knowledge of Python language and related frameworks');
+INSERT INTO skills (name, description, category)
+VALUES ('Java', 'Knowledge of Java language and related frameworks', 'Coding'),
+       ('Python', 'Knowledge of Python language and related frameworks', 'Coding');
 
 INSERT INTO jobs (position, startDate, endDATE, description, recruiterId)
-VALUES ('Software Engineer', 2025-01-18,2025-07-01,'Develop software applications and services', 1),
-       ('Data Analyst', 2025-01-10,2025-06-29,'Analyze data and generate insights for business decisions', 1);
+VALUES ('Software Engineer', '2025-01-18','2025-07-01','Develop software applications and services', 1),
+       ('Data Analyst', '2025-01-10','2025-06-29','Analyze data and generate insights for business decisions', 1);
 
 INSERT INTO experiences (title, studentID, review, rating, jobID)
 VALUES ('This company sucks', 1, 'Great learning experience with challenging projects', 5, 1),
        ('Best co-op ever', 2, 'Valuable experience with data-driven projects', 4, 2);
 
-INSERT INTO studentSkills (username, studentID, name, proficiency)
+INSERT INTO studentSkills (studentID, name, proficiency)
 VALUES
-    ('jdoe', 1, 'Python', 'Advanced'),
-    ('asmith', 2, 'Java', 'Intermediate');
+    (1, 'Python', 'Advanced'),
+    (2, 'Java', 'Intermediate');
 
 INSERT INTO jobsSkills (jobID, name)
 VALUES (1, 'Python'),
        (2, 'Java');
 
-INSERT INTO application (studentID, jobID, Status)
-VALUES (1, 1, 'Submitted'),
-       (2, 2, 'Accepted');
+INSERT INTO application (studentID, jobID)
+VALUES (1, 1),
+       (2, 2);
 
 INSERT INTO BlackListed (RecId, StudentID)
 VALUES (1, 2),
