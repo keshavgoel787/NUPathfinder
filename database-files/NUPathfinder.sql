@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS jobs
 (
     position varchar(50) NOT NULL,
     description tinytext NOT NULL,
+    startDate DATE NOT NULL,
+    endDATE DATE NOT NULL,
     recruiterId int not null,
     jobID int AUTO_INCREMENT NOT NULL,
     PRIMARY KEY (jobID),
@@ -122,9 +124,9 @@ INSERT INTO skills (name, description)
 VALUES ('Java', 'Knowledge of Java language and related frameworks'),
        ('Python', 'Knowledge of Python language and related frameworks');
 
-INSERT INTO jobs (position, description, recruiterId)
-VALUES ('Software Engineer', 'Develop software applications and services', 1),
-       ('Data Analyst', 'Analyze data and generate insights for business decisions', 1);
+INSERT INTO jobs (position, startDate, endDATE, description, recruiterId)
+VALUES ('Software Engineer', 2025-01-18,2025-07-01,'Develop software applications and services', 1),
+       ('Data Analyst', 2025-01-10,2025-06-29,'Analyze data and generate insights for business decisions', 1);
 
 INSERT INTO experiences (title, studentID, review, rating, jobID)
 VALUES ('This company sucks', 1, 'Great learning experience with challenging projects', 5, 1),
