@@ -34,6 +34,85 @@ CREATE TABLE IF NOT EXISTS Recruiters (
     PRIMARY KEY (recID),
     FOREIGN KEY (companyID) REFERENCES Companies(companyID)
 );
+-- Developers Table
+DROP TABLE IF EXISTS Developer;
+CREATE TABLE IF NOT EXISTS Developer (
+    developerID INT AUTO_INCREMENT NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    role VARCHAR(100) NOT NULL,
+    experienceLevel VARCHAR(50),
+    PRIMARY KEY (developerID)
+);
+-- Application Table
+DROP TABLE IF EXISTS Application;
+CREATE TABLE IF NOT EXISTS Application (
+    appID INT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    version VARCHAR(50),
+    status VARCHAR(50),
+    PRIMARY KEY (appID)
+);
+
+--User Feedback Table
+DROP TABLE IF EXISTS UserFeedback;
+CREATE TABLE IF NOT EXISTS UserFeedback (
+    feedbackID INT AUTO_INCREMENT NOT NULL,
+    userID INT NOT NULL,
+    featureID INT NOT NULL,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    comments TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (feedbackID),
+    FOREIGN KEY (featureID) REFERENCES Feature(featureID),
+    FOREIGN KEY (userID) REFERENCES Developer(developerID)
+);
+
+-- DataLogs Table
+DROP TABLE IF EXISTS DataLogs;
+CREATE TABLE IF NOT EXISTS DataLogs (
+    logID INT AUTO_INCREMENT NOT NULL,
+    type VARCHAR(100),
+    details TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (logID),
+    FOREIGN KEY (developerID) REFERENCES Developer(developerID)
+);
+
+-- Testing Table
+DROP TABLE IF EXISTS Testing;
+CREATE TABLE IF NOT EXISTS Testing (
+    testID INT AUTO_INCREMENT NOT NULL,
+    featureID INT NOT NULL,
+    testType VARCHAR(100),
+    result VARCHAR(50),
+    runDate DATE,
+    PRIMARY KEY (testID),
+    FOREIGN KEY (featureID) REFERENCES Feature(featureID)
+);
+
+-- Documentation Table
+DROP TABLE IF EXISTS Documentation;
+CREATE TABLE IF NOT EXISTS Documentation (
+    docID INT AUTO_INCREMENT NOT NULL,
+    section VARCHAR(100) NOT NULL,
+    details TEXT NOT NULL,
+    lastUpdated DATE,
+    developerID INT NOT NULL,
+    PRIMARY KEY (docID),
+    FOREIGN KEY (developerID) REFERENCES Developer(developerID)
+);
+
+-- Feature Table
+DROP TABLE IF EXISTS Feature;
+CREATE TABLE IF NOT EXISTS Feature (
+    featureID INT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    status VARCHAR(50),
+    PRIMARY KEY (featureID)
+);
 
 -- Jobs Table
 DROP TABLE IF EXISTS jobs;
@@ -333,4 +412,44 @@ INSERT INTO IndustryTrend (trendID, userID, trendType, dateObserved)
 VALUES
 (1, 1, 'Emerging', '2024-11-05'),
 (2, 2, 'Established', '2024-11-10');
+
+-- Insert Sample Data into Developer
+INSERT INTO Developer (username, firstName, lastName, role, experience)
+VALUES
+('sgates', 'Steve', 'Gates', 'Full-Stack Developer', 'Senior');
+
+-- Insert Sample Data into Application
+INSERT INTO Application (name, version, status)
+VALUES
+('NU Pathfinder', '1.0', 'Active');
+
+-- Insert Sample Data into Documentation
+INSERT INTO Documentation (section, details, lastUpdated, developerID)
+VALUES
+('User Management', 'Handles user roles and permissions.', '2024-11-20', 1),
+('API Integration', 'Documents API endpoints for external systems.', '2024-11-20', 1);
+
+-- Insert Sample Data into Feature
+INSERT INTO Feature (name, description, status)
+VALUES
+('Advanced Search', 'Enhanced search for users.', 'Active'),
+('Real-Time Notifications', 'Sends real-time updates to users.', 'Testing');
+
+-- Insert Sample Data into UserFeedback
+INSERT INTO UserFeedback (userID, featureID, rating, comments, timestamp)
+VALUES
+(1, 1, 5, 'Great functionality!', '2024-11-20'),
+(1, 2, 4, 'Useful feature for alerts.', '2024-11-20');
+
+-- Insert Sample Data into DataLogs
+INSERT INTO DataLogs (type, details, timestamp, developerID)
+VALUES
+('Error', 'Resolved database connection issue.', '2024-11-18', 1),
+('Performance', 'Optimized page load times.', '2024-11-19', 1);
+
+-- Insert Sample Data into Testing
+INSERT INTO Testing (featureID, testType, result, runDate)
+VALUES
+(1, 'Regression Testing', 'Passed', '2024-11-19'),
+(2, 'Integration Testing', 'Passed', '2024-11-20');
 
