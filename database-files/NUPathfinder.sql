@@ -45,9 +45,9 @@ CREATE TABLE IF NOT EXISTS Developer (
     experienceLevel VARCHAR(50),
     PRIMARY KEY (developerID)
 );
--- Application Table
-DROP TABLE IF EXISTS Application;
-CREATE TABLE IF NOT EXISTS Application (
+-- Website Table
+DROP TABLE IF EXISTS Website;
+CREATE TABLE IF NOT EXISTS Website (
     appID INT AUTO_INCREMENT NOT NULL,
     name VARCHAR(100) NOT NULL,
     version VARCHAR(50),
@@ -55,18 +55,14 @@ CREATE TABLE IF NOT EXISTS Application (
     PRIMARY KEY (appID)
 );
 
---User Feedback Table
-DROP TABLE IF EXISTS UserFeedback;
-CREATE TABLE IF NOT EXISTS UserFeedback (
-    feedbackID INT AUTO_INCREMENT NOT NULL,
-    userID INT NOT NULL,
-    featureID INT NOT NULL,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
-    comments TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (feedbackID),
-    FOREIGN KEY (featureID) REFERENCES Feature(featureID),
-    FOREIGN KEY (userID) REFERENCES Developer(developerID)
+-- Feature Table
+DROP TABLE IF EXISTS Feature;
+CREATE TABLE IF NOT EXISTS Feature (
+    featureID INT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    status VARCHAR(50),
+    PRIMARY KEY (featureID)
 );
 
 -- DataLogs Table
@@ -76,8 +72,11 @@ CREATE TABLE IF NOT EXISTS DataLogs (
     type VARCHAR(100),
     details TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    developerID INT NOT NULL,
+    appID INT NOT NULL,
     PRIMARY KEY (logID),
-    FOREIGN KEY (developerID) REFERENCES Developer(developerID)
+    FOREIGN KEY (developerID) REFERENCES Developer(developerID),
+    FOREIGN KEY (appID) REFERENCES Website(appID)
 );
 
 -- Testing Table
@@ -104,15 +103,6 @@ CREATE TABLE IF NOT EXISTS Documentation (
     FOREIGN KEY (developerID) REFERENCES Developer(developerID)
 );
 
--- Feature Table
-DROP TABLE IF EXISTS Feature;
-CREATE TABLE IF NOT EXISTS Feature (
-    featureID INT AUTO_INCREMENT NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    status VARCHAR(50),
-    PRIMARY KEY (featureID)
-);
 
 -- Jobs Table
 DROP TABLE IF EXISTS jobs;
@@ -240,8 +230,25 @@ CREATE TABLE IF NOT EXISTS Notes (
     noteID INT AUTO_INCREMENT NOT NULL,
     userID INT NOT NULL,
     content TEXT NOT NULL,
+    note_type TEXT,
     PRIMARY KEY (noteID,userID),
+    UNIQUE(noteID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
+);
+
+DROP TABLE IF EXISTS UserFeedback;
+CREATE TABLE IF NOT EXISTS UserFeedback (
+    feedbackID INT AUTO_INCREMENT NOT NULL,
+    userID INT NOT NULL,
+    featureID INT NOT NULL,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    comments TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    noteID INT NOT NULL,
+    PRIMARY KEY (feedbackID),
+    FOREIGN KEY (featureID) REFERENCES Feature(featureID),
+    FOREIGN KEY (userID) REFERENCES Developer(developerID),
+    FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
 -- SkillsGap Table
@@ -414,12 +421,11 @@ VALUES
 (2, 2, 'Established', '2024-11-10');
 
 -- Insert Sample Data into Developer
-INSERT INTO Developer (username, firstName, lastName, role, experience)
+INSERT INTO Developer (username, firstName, lastName, role, experienceLevel)
 VALUES
 ('sgates', 'Steve', 'Gates', 'Full-Stack Developer', 'Senior');
 
--- Insert Sample Data into Application
-INSERT INTO Application (name, version, status)
+INSERT INTO Website (name, version, status)
 VALUES
 ('NU Pathfinder', '1.0', 'Active');
 
@@ -436,16 +442,16 @@ VALUES
 ('Real-Time Notifications', 'Sends real-time updates to users.', 'Testing');
 
 -- Insert Sample Data into UserFeedback
-INSERT INTO UserFeedback (userID, featureID, rating, comments, timestamp)
+INSERT INTO UserFeedback (userID, featureID, rating, comments, timestamp, noteID)
 VALUES
-(1, 1, 5, 'Great functionality!', '2024-11-20'),
-(1, 2, 4, 'Useful feature for alerts.', '2024-11-20');
+(1, 1, 5, 'Great functionality!', '2024-11-20',1),
+(1, 2, 4, 'Useful feature for alerts.', '2024-11-20',2);
 
 -- Insert Sample Data into DataLogs
-INSERT INTO DataLogs (type, details, timestamp, developerID)
+INSERT INTO DataLogs (type, details, timestamp, developerID, appID)
 VALUES
-('Error', 'Resolved database connection issue.', '2024-11-18', 1),
-('Performance', 'Optimized page load times.', '2024-11-19', 1);
+('Error', 'Resolved database connection issue.', '2024-11-18', 1, 1),
+('Performance', 'Optimized page load times.', '2024-11-19', 1, 1);
 
 -- Insert Sample Data into Testing
 INSERT INTO Testing (featureID, testType, result, runDate)
