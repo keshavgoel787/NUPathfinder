@@ -315,7 +315,7 @@ VALUES
 -- Insert Sample Data into Recruiters
 INSERT INTO Recruiters (firstName, lastName, companyID)
 VALUES
-('Emily', 'Johnson', 1),
+('Jane', 'Dough', 1),
 ('Robert', 'Brown', 2),
 ('Sophia', 'Davis', 3);
 
@@ -323,6 +323,7 @@ VALUES
 INSERT INTO jobs (position, description, startDate, endDate, recID)
 VALUES
 ('Software Engineer Intern', 'Develop web applications using modern frameworks.', '2024-06-01', '2024-08-31', 1),
+('ML Supervisor', 'Help interns with machine learning.', '2024-08-01', '2024-10-31', 1),
 ('Data Analyst Intern', 'Analyze datasets to provide actionable insights.', '2024-05-15', '2024-08-15', 2),
 ('Mechanical Engineer Intern', 'Assist in prototyping and testing.', '2024-05-01', '2024-07-31', 3);
 
