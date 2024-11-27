@@ -129,11 +129,11 @@ CREATE TABLE IF NOT EXISTS skills (
 -- Student Skills Table
 DROP TABLE IF EXISTS studentSkills;
 CREATE TABLE IF NOT EXISTS studentSkills (
-    Username INT NOT NULL,
+    studentID INT NOT NULL,
     name VARCHAR(100) NOT NULL,
     proficiency VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Username, name),
-    FOREIGN KEY (Username) REFERENCES students(studentID),
+    PRIMARY KEY (studentID, name),
+    FOREIGN KEY (studentID) REFERENCES students(studentID),
     FOREIGN KEY (name) REFERENCES skills(name)
 );
 
@@ -335,7 +335,7 @@ VALUES
 ('Prototyping', 'Creating and testing prototypes', 'Mechanical');
 
 -- Insert Sample Data into Student Skills
-INSERT INTO studentSkills (Username, name, proficiency)
+INSERT INTO studentSkills (studentID, name, proficiency)
 VALUES
 (1, 'Python', 'Advanced'),
 (2, 'Data Analysis', 'Intermediate'),
