@@ -22,4 +22,4 @@ if st.button('My Profile',
 if st.button('Job Listings', 
             type = 'primary', 
             use_container_width=True):
-    st.switch_page('pages/Job_Listing.py')
+    st.switch_page('pages/Job_Listings.py')
