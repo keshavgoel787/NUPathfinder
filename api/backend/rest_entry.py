@@ -5,7 +5,7 @@ from backend.customers.customer_routes import customers
 from backend.products.products_routes import products
 from backend.recruiters.recruiters_routes import recruiters
 from backend.simple.simple_routes import simple_routes
-from backend.departmenthead.departmenthead_routes import 
+from backend.departmenthead.departmenthead_routes import departmenthead
 import os
 from dotenv import load_dotenv
 
@@ -43,6 +43,7 @@ def create_app():
     app.logger.info('current_app(): registering blueprints with Flask app object.')   
     app.register_blueprint(simple_routes)
     app.register_blueprint(recruiters,   url_prefix='/r')
+    app.register_blueprint(departmenthead,   url_prefix='/d')
     app.register_blueprint(customers,   url_prefix='/c')
     app.register_blueprint(products,    url_prefix='/p')
 

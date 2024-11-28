@@ -15,11 +15,10 @@ from backend.db_connection import db
 departmenthead = Blueprint('departmenthead', __name__)
 
 #Get all the listings for a recruiter
-@departmenthead.route('/dhead', methods=['GET'])
+@departmenthead.route('/', methods=['GET'])
 def get_listings():
     query = f'''
         SELECT *
-        FROM students;
     '''
     
     cursor = db.get_db().cursor()
