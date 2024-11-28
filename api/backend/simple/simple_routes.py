@@ -3,6 +3,7 @@ import json
 from backend.db_connection import db
 from backend.simple.playlist import sample_playlist_data
 
+# A blueprint is a collection of routes in flask
 # This blueprint handles some basic routes that you can use for testing
 simple_routes = Blueprint('simple_routes', __name__)
 
