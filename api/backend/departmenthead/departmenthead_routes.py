@@ -12,18 +12,14 @@ from backend.db_connection import db
 #------------------------------------------------------------
 # Create a new Blueprint object, which is a collection of 
 # routes.
-recruiters = Blueprint('recruiters', __name__)
+departmenthead = Blueprint('departmenthead', __name__)
 
 #Get all the listings for a recruiter
-@recruiters.route('/dhead', methods=['GET'])
+@departmenthead.route('/dhead', methods=['GET'])
 def get_listings():
     query = f'''
-        SELECT 
-         position, 
-         description, 
-         startDate,
-         endDate 
-         from jobs 
+        SELECT *
+        FROM students;
     '''
     
     cursor = db.get_db().cursor()
