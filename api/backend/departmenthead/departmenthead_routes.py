@@ -1,0 +1,37 @@
+########################################################
+#Department Head blueprint of endpoints
+########################################################
+
+from flask import Blueprint
+from flask import request
+from flask import jsonify
+from flask import make_response
+from flask import current_app
+from backend.db_connection import db
+
+#------------------------------------------------------------
+# Create a new Blueprint object, which is a collection of 
+# routes.
+recruiters = Blueprint('recruiters', __name__)
+
+#Get all the listings for a recruiter
+@recruiters.route('/dhead', methods=['GET'])
+def get_listings():
+    query = f'''
+        SELECT 
+         position, 
+         description, 
+         startDate,
+         endDate 
+         from jobs 
+    '''
+    
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
