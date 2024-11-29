@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 st.title("Skill Analysis")
 st.write("\n\n")
 
-response = requests.get('http://api:4000/d/Gaps').json()
+skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 
-st.write(response)
+st.subheader('Skill Gaps to Address')
+for i in skill_gaps:
+    st.write(i['name'])
