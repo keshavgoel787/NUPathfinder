@@ -251,17 +251,14 @@ CREATE TABLE IF NOT EXISTS UserFeedback (
     FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
--- SkillsGap Table
 DROP TABLE IF EXISTS SkillsGap;
 CREATE TABLE IF NOT EXISTS SkillsGap (
     name VARCHAR(100) NOT NULL,
-    analysisID INT NOT NULL,
-    status VARCHAR(50),
-    PRIMARY KEY (name, analysisID),
+    analysisID INT AUTO_INCREMENT NOT NULL,
+    PRIMARY KEY (analysisID, name),
     FOREIGN KEY (name) REFERENCES skills(name)
 );
 
--- SkillsGapAnalysis Table
 DROP TABLE IF EXISTS SkillsGapAnalysis;
 CREATE TABLE IF NOT EXISTS SkillsGapAnalysis (
     name VARCHAR(100) NOT NULL, -- Include name to form the composite key
@@ -270,7 +267,7 @@ CREATE TABLE IF NOT EXISTS SkillsGapAnalysis (
     gapMagnitude INT,
     dateObserved DATE,
     PRIMARY KEY (userID, analysisID), -- Composite primary key
-    FOREIGN KEY (name, analysisID) REFERENCES SkillsGap(name, analysisID),
+    FOREIGN KEY (analysisID, name) REFERENCES SkillsGap(analysisID, name),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
 
@@ -295,8 +292,6 @@ CREATE TABLE IF NOT EXISTS IndustryTrend (
     FOREIGN KEY (trendID) REFERENCES SkillsTrend(trendID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
-
-USE NUPathfinder;
 
 -- Insert Sample Data into Students
 INSERT INTO students (username, firstName, lastName, major)
@@ -332,7 +327,8 @@ INSERT INTO skills (name, description, category)
 VALUES
 ('Python', 'Programming language', 'Programming'),
 ('Data Analysis', 'Analyzing datasets', 'Data Science'),
-('Prototyping', 'Creating and testing prototypes', 'Mechanical');
+('Prototyping', 'Creating and testing prototypes', 'Mechanical'),
+('Java', 'Programming Language', 'Programming');
 
 -- Insert Sample Data into Student Skills
 INSERT INTO studentSkills (studentID, name, proficiency)
@@ -346,8 +342,8 @@ INSERT INTO jobsSkills (jobID, name)
 VALUES
 (1, 'Python'),
 (2, 'Data Analysis'),
-(3, 'Prototyping');
-
+(3, 'Prototyping'),
+(4, 'Java');
 -- Insert Sample Data into Applications
 INSERT INTO application (studentID, jobID, matchPercent, status)
 VALUES
@@ -397,17 +393,16 @@ VALUES
 (1, 'Review curriculum for upcoming semester.'),
 (2, 'Discuss research opportunities with faculty.');
 
--- Insert Sample Data into SkillsGap
-INSERT INTO SkillsGap (name, analysisID, status)
-VALUES
-('Python', 1, 'In Progress'),
-('Data Analysis', 2, 'Completed');
 
--- Insert Sample Data into SkillsGapAnalysis
-INSERT INTO SkillsGapAnalysis (name, analysisID, userID, gapMagnitude, dateObserved)
-VALUES
-('Python', 1, 1, 3, '2024-11-01'),
-('Data Analysis', 2, 2, 1, '2024-11-10');
+INSERT INTO SkillsGap (name)
+SELECT js.name FROM
+        jobsSkills js
+    LEFT JOIN
+        studentSkills ss
+    ON
+        js.name = ss.name
+    WHERE
+        ss.name IS NULL;
 
 -- Insert Sample Data into SkillsTrend
 INSERT INTO SkillsTrend (name, description)
