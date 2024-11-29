@@ -19,6 +19,7 @@ departmenthead = Blueprint('departmenthead', __name__)
 def get_listings():
     query = f'''
         SELECT *
+        FROM students
     '''
     
     cursor = db.get_db().cursor()

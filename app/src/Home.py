@@ -65,8 +65,8 @@ if st.button('Act as Jane Dough, a Recruiter',
     st.session_state['first_name'] = 'Jane'
     st.switch_page('pages/10_USAID_Worker_Home.py')
 
-if st.button('ACt as George James, a Department Head',
-             type = 'secondary',
+if st.button('Act as George James, a Department Head',
+             type = 'primary',
              use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'Department_Head'
