@@ -31,3 +31,25 @@ def get_listings():
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
+
+@departmenthead.route('/Note/<department_ID>', methods = ['POST'])
+def add_note(department_ID):
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    content = the_data['content']
+
+    query = f'''
+        INSERT INTO Notes(userID, content)
+        VALUES ({department_ID}, {content})
+    '''
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    response = make_response("Successfully added Note")
+    response.status_code = 200
+    return response
