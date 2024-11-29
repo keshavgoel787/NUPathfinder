@@ -70,7 +70,9 @@ if st.button('Act as George James, a Department Head',
              use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'Department_Head'
-    st.switch_page('pages/32_Warehouse_Manager.py')
+    st.session_state['first_name'] = 'George'
+    st.session_state['department_ID'] = 1
+    st.switch_page('pages/Recruiter_Home.py')
 
 if st.button('Act as Steve Gates, a System Administrator', 
             type = 'primary', 
