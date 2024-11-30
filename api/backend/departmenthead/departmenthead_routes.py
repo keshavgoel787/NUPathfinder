@@ -32,24 +32,44 @@ def get_listings():
     response.status_code = 200
     return response
 
-@departmenthead.route('/Note/<department_ID>', methods = ['POST'])
+@departmenthead.route('/Note/<department_ID>', methods = ['GET','POST'])
 def add_note(department_ID):
-    the_data = request.json
-    current_app.logger.info(the_data)
+    if request.method == 'POST':
 
-    content = the_data['content']
+        the_data = request.json
+        current_app.logger.info(the_data)
 
-    query = f'''
+        content = the_data['content']
+
+        query = '''
         INSERT INTO Notes(userID, content)
-        VALUES ({department_ID}, {content})
-    '''
-    current_app.logger.info(query)
+        VALUES (%s, %s)
+        '''
+        current_app.logger.info(query)
 
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
+        # executing and committing the insert statement 
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (department_ID, content))
+        db.get_db().commit()
     
-    response = make_response("Successfully added Note")
-    response.status_code = 200
-    return response
+        response = make_response("Successfully added Note")
+        response.status_code = 200
+        return response
+    
+    else:
+
+        query = f'''
+        SELECT *
+        FROM Notes
+        WHERE userID = {department_ID}
+        '''
+    
+        cursor = db.get_db().cursor()
+
+        cursor.execute(query)
+
+        theData = cursor.fetchall() 
+
+        response = make_response(jsonify(theData))
+        response.status_code = 200
+        return response
