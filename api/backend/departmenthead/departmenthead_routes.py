@@ -32,6 +32,22 @@ def get_listings():
     response.status_code = 200
     return response
 
+@departmenthead.route('/totalstudent', methods = ['GET'])
+def get_total_student():
+    query = f'''
+        SELECT *
+        FROM studentSkills
+    '''
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 @departmenthead.route('/Note/<department_ID>', methods = ['GET','POST'])
 def add_note(department_ID):
     if request.method == 'POST':
@@ -73,3 +89,4 @@ def add_note(department_ID):
         response = make_response(jsonify(theData))
         response.status_code = 200
         return response
+    
