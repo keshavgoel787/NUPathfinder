@@ -230,7 +230,6 @@ CREATE TABLE IF NOT EXISTS Notes (
     noteID INT AUTO_INCREMENT NOT NULL,
     userID INT NOT NULL,
     content TEXT NOT NULL,
-    note_type TEXT,
     PRIMARY KEY (noteID,userID),
     UNIQUE(noteID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)

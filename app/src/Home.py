@@ -72,7 +72,7 @@ if st.button('Act as George James, a Department Head',
     st.session_state['role'] = 'Department_Head'
     st.session_state['first_name'] = 'George'
     st.session_state['department_ID'] = 1
-    st.switch_page('pages/Recruiter_Home.py')
+    st.switch_page('pages/Department_Home.py')
 
 if st.button('Act as Steve Gates, a System Administrator', 
             type = 'primary', 

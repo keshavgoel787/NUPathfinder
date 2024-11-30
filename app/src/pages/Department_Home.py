@@ -24,4 +24,4 @@ if st.button('View Skill Gaps',
 if st.button('Add a Note', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/Skill_Analysis.py')
+  st.switch_page('pages/Notes.py')

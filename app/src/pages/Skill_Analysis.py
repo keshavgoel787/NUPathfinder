@@ -21,14 +21,3 @@ skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 st.subheader('Skill Gaps to Address')
 for i in skill_gaps:
     st.write(i['name'])
-
-
-note_put = requests.post(
-    f"http://api:4000/d/Note/{department_id}",
-    json={"content": "hello"}, 
-)
-
-note_get = requests.get(f'http://api:4000/d/Note/{department_id}').json()
-st.write(note_get)
-
-
