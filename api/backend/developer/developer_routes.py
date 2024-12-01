@@ -45,3 +45,29 @@ def get_user_feedback():
     response.status_code = 200
     return response
 
+# Route 3: Automated test results
+@developer.route('/test_results', methods=['POST'])
+def log_test_results():
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    feature_id = the_data['featureID']
+    test_type = the_data['testType']
+    result = the_data['result']
+    run_date = the_data['runDate']
+
+    query = f'''
+        INSERT INTO testing (featureID, testType, result, runDate)
+        VALUES (%s, %s, %s, %s)
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (feature_id, test_type, result, run_date))
+    db.get_db().commit()
+
+    response = make_response("Successfully logged test results")
+    response.status_code = 200
+    return response
+
+
+
+
