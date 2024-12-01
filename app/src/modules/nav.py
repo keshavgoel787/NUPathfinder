@@ -55,6 +55,15 @@ def Reorders():
     st.sidebar.page_link('pages/41_Reorders.py', label='Reorders')
 
 
+###---------------------------Listings Side bar --------------------------
+def listingsNav():
+    st.sidebar.page_link('pages/AddListings.py', label = 'Add Listing', icon = "➕")
+
+###---------------------------Adding Side bar --------------------------
+def addingNav():
+    st.sidebar.page_link('pages/Listings.py', label = 'View Listings', icon = "👁️")
+
+
 # --------------------------------Links Function -----------------------------------------------
 def SideBarLinks(show_home=False):
     """
@@ -81,11 +90,12 @@ def SideBarLinks(show_home=False):
             ProfileNav()
             JobListingNav()
 
-        # If the user role is usaid worker, show the Api Testing page
+        # If the user role is recrioter, show the recruiter
         if st.session_state["role"] == "recruiter":
-            PredictionNav()
-            ApiTestNav()
-            ClassificationNav()
+            if st.session_state["recState"] == "listing":
+                listingsNav()
+            elif st.session_state["recState"] == "adding":
+                addingNav()
 
         # If the user is an administrator, give them access to the administrator pages
         if st.session_state["role"] == "administrator":
@@ -96,6 +106,7 @@ def SideBarLinks(show_home=False):
 
     # Always show the About page at the bottom of the list of links
     AboutPageNav()
+
 
     if st.session_state["authenticated"]:
         # Always show a logout button if there is a logged in user
