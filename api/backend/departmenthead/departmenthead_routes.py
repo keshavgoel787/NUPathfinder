@@ -25,6 +25,7 @@ def get_listings():
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
+    
 
     theData = cursor.fetchall() 
 
