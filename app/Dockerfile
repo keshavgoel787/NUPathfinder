@@ -16,6 +16,8 @@ COPY ./src/requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
+RUN pip install mysql-connector-python
+
 RUN ls
 
 EXPOSE 8501

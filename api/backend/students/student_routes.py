@@ -39,7 +39,7 @@ def get_listings():
 @students.route('/listing/<id>', methods=['GET'])
 def get_listing_detail(id):
     query = '''
-        SELECT id, position, start_date, end_date, description
+        SELECT jobID, position, startDate, endDate, description
         FROM students
         WHERE id = %s
     '''
