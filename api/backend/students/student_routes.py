@@ -23,7 +23,7 @@ students = Blueprint('students', __name__)
 @students.route('/students', methods=['GET'])
 def get_listings():
     query = '''
-        SELECT id, position, start_date, end_date, description
+        SELECT jobID, position, startDate, endDate, description
         FROM jobs
     '''
     cursor = db.get_db().cursor()
