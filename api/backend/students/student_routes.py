@@ -36,12 +36,12 @@ def get_listings():
 
 # ------------------------------------------------------------
 # Get specific listing details by ID
-@students.route('/listing/<id>', methods=['GET'])
+@students.route('/jobs/<id>', methods=['GET'])
 def get_listing_detail(id):
     query = '''
         SELECT jobID, position, startDate, endDate, description
-        FROM students
-        WHERE id = %s
+        FROM jobs
+        WHERE jobID = %s
     '''
     current_app.logger.info(f'GET /listing/<id> query={query}')
     cursor = db.get_db().cursor()

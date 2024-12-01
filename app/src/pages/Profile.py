@@ -2,6 +2,7 @@ import streamlit as st
 #import mysql.connector
 import mysql
 import logging
+import os
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,9 +14,9 @@ st.write("\n\n")
 # Connect to the MySQL database
 def get_db_connection():
     return mysql.connector.connect(
-        host="db",
-        user="root",  # replace with your MySQL username
-        password="BillyBobJoe",  # replace with your MySQL password
+        host= os.getenv('DB_HOST').strip(),
+        user= os.getenv('DB_USER').strip(),  # replace with your MySQL username
+        password= os.getenv('MYSQL_ROOT_PASSWORD').strip(),  # replace with your MySQL password
         database="NUPathfinder"
     )
 
