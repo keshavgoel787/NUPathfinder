@@ -1,23 +1,28 @@
 import streamlit as st
 #import mysql
-#import mysql.connector
+import mysql.connector
 import logging
+from modules.nav import SideBarLinks
+
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+SideBarLinks(show_home=True)
+
 
 # Set the page title
 st.title("Job Listings")
 st.write("\n\n")
 
 # Connect to the MySQL database
-'''def get_db_connection():
+def get_db_connection():
     return mysql.connector.connect(
         host="mysql_db",
         user="root",  # replace with your MySQL username
-        password="StarImpact",  # replace with your MySQL password
+        password="BillyBobJoe",  # replace with your MySQL password
         database="NUPathfinder"
-    )'''
+    )
 
 # Search bar for job listings
 st.write("### Search for Job Listings")

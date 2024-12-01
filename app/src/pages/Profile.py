@@ -62,6 +62,10 @@ except mysql.connector.Error as err:
 
 st.write("\n\n")
 
+if 'reload' not in st.session_state:
+    st.session_state['reload'] = False
+
+
 # Add a new skill
 st.write("### Add a New Skill")
 skill_name = st.text_input("Skill Name")
@@ -81,7 +85,7 @@ if st.button('Add Skill', type='primary', use_container_width=True):
             cursor.close()
             conn.close()
             st.success("Successfully added skill.")
-            st.experimental_rerun()
+            st.session_state['reload'] = True
         except mysql.connector.Error as err:
             logger.error(f"Error: {err}")
             st.error("Failed to add skill.")
@@ -108,7 +112,7 @@ if st.button('Update Skill', type='primary', use_container_width=True):
             cursor.close()
             conn.close()
             st.success("Successfully updated skill proficiency.")
-            st.experimental_rerun()
+            st.session_state['reload'] = True
         except mysql.connector.Error as err:
             logger.error(f"Error: {err}")
             st.error("Failed to update skill.")
@@ -133,7 +137,7 @@ if st.button('Delete Skill', type='primary', use_container_width=True):
             cursor.close()
             conn.close()
             st.success("Successfully deleted skill.")
-            st.experimental_rerun()
+            st.session_state['reload'] = True
         except mysql.connector.Error as err:
             logger.error(f"Error: {err}")
             st.error("Failed to delete skill.")
