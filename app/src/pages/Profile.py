@@ -1,5 +1,6 @@
 import streamlit as st
-import requests
+#import mysql.connector
+import mysql
 import logging
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
@@ -9,19 +10,41 @@ logger = logging.getLogger(__name__)
 st.title("My Profile")
 st.write("\n\n")
 
-# Display existing skills - assuming there's an endpoint to fetch current skills
-student_id = st.session_state.get('student_id', 1)  # Example of retrieving student ID from session state
-response = requests.get(f'http://localhost:5000/students/{student_id}/skills')
+# Connect to the MySQL database
+def get_db_connection():
+    return mysql.connector.connect(
+        host="db",
+        user="root",  # replace with your MySQL username
+        password="BillyBobJoe",  # replace with your MySQL password
+        database="NUPathfinder"
+    )
 
-if response.status_code == 200:
-    skills = response.json()
+# Display existing skills
+student_id = st.session_state.get('student_id', 1)  # Example of retrieving student ID from session state
+try:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    # Retrieve student's skills from the database
+    query = '''
+        SELECT ss.name AS skill_name, ss.proficiency, s.description
+        FROM studentSkills ss
+        JOIN skills s ON ss.name = s.name
+        WHERE ss.studentID = %s
+    '''
+    cursor.execute(query, (student_id,))
+    skills = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
     if skills:
         st.write("### Current Skills")
         for skill in skills:
             st.write(f"Skill: {skill['skill_name']}, Proficiency: {skill['proficiency']}")
+            st.write(f"Description: {skill['description']}")
     else:
         st.write("You currently have no skills listed.")
-else:
+except mysql.connector.Error as err:
+    logger.error(f"Error: {err}")
     st.error("Error loading skills.")
 
 st.write("\n\n")
@@ -33,16 +56,21 @@ skill_proficiency = st.slider("Proficiency (1-5)", 1, 5, 1)
 
 if st.button('Add Skill', type='primary', use_container_width=True):
     if skill_name:
-        payload = {
-            'skill_name': skill_name,
-            'proficiency': skill_proficiency,
-            'student_id': student_id
-        }
-        response = requests.post(f'http://localhost:5000/addSkill', json=payload)
-        if response.status_code == 200:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = '''
+                INSERT INTO studentSkills (studentID, name, proficiency)
+                VALUES (%s, %s, %s)
+            '''
+            cursor.execute(query, (student_id, skill_name, skill_proficiency))
+            conn.commit()
+            cursor.close()
+            conn.close()
             st.success("Successfully added skill.")
             st.experimental_rerun()
-        else:
+        except mysql.connector.Error as err:
+            logger.error(f"Error: {err}")
             st.error("Failed to add skill.")
     else:
         st.warning("Please enter a skill name.")
@@ -50,19 +78,27 @@ if st.button('Add Skill', type='primary', use_container_width=True):
 # Update skill proficiency
 st.write("### Update Skill Proficiency")
 skill_to_update = st.selectbox("Select Skill to Update", [skill['skill_name'] for skill in skills] if skills else [])
-new_proficiency = st.slider("New Proficiency (1-5)", 1, 5, 1)
+new_proficiency = st.slider("New Proficiency (1-5)", 1, 5, 1, key='update')
 
 if st.button('Update Skill', type='primary', use_container_width=True):
     if skill_to_update:
-        skill_id = next((skill['id'] for skill in skills if skill['skill_name'] == skill_to_update), None)
-        if skill_id:
-            payload = {'proficiency': new_proficiency}
-            response = requests.put(f'http://localhost:5000/skill/{skill_id}', json=payload)
-            if response.status_code == 200:
-                st.success("Successfully updated skill proficiency.")
-                st.experimental_rerun()
-            else:
-                st.error("Failed to update skill.")
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = '''
+                UPDATE studentSkills
+                SET proficiency = %s
+                WHERE studentID = %s AND name = %s
+            '''
+            cursor.execute(query, (new_proficiency, student_id, skill_to_update))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            st.success("Successfully updated skill proficiency.")
+            st.experimental_rerun()
+        except mysql.connector.Error as err:
+            logger.error(f"Error: {err}")
+            st.error("Failed to update skill.")
     else:
         st.warning("Please select a skill to update.")
 
@@ -72,13 +108,21 @@ skill_to_delete = st.selectbox("Select Skill to Delete", [skill['skill_name'] fo
 
 if st.button('Delete Skill', type='primary', use_container_width=True):
     if skill_to_delete:
-        skill_id = next((skill['id'] for skill in skills if skill['skill_name'] == skill_to_delete), None)
-        if skill_id:
-            response = requests.delete(f'http://localhost:5000/skill/{skill_id}')
-            if response.status_code == 200:
-                st.success("Successfully deleted skill.")
-                st.experimental_rerun()
-            else:
-                st.error("Failed to delete skill.")
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = '''
+                DELETE FROM studentSkills
+                WHERE studentID = %s AND name = %s
+            '''
+            cursor.execute(query, (student_id, skill_to_delete))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            st.success("Successfully deleted skill.")
+            st.experimental_rerun()
+        except mysql.connector.Error as err:
+            logger.error(f"Error: {err}")
+            st.error("Failed to delete skill.")
     else:
         st.warning("Please select a skill to delete.")
