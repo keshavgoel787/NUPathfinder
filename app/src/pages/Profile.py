@@ -1,11 +1,17 @@
 import streamlit as st
 import mysql.connector
-#import mysql
 import logging
 import os
+#from dotenv import load_dotenv
+from modules.nav import SideBarLinks
+
+# Load environment variables from .env file
+#load_dotenv()
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+SideBarLinks(show_home=True)
 
 # Set the page title
 st.title("My Profile")
@@ -14,14 +20,18 @@ st.write("\n\n")
 # Connect to the MySQL database
 def get_db_connection():
     return mysql.connector.connect(
-        host= "db",
-        user= "root",  # replace with your MySQL username
-        password= "BillyBobJoe",  # replace with your MySQL password
-        database="NUPathfinder"
+        host='db',  # Load host from .env file
+        user='root',  # Load user from .env file
+        password='BillyBobJoe',  # Load password from .env file
+        database='NUPathfinder'
     )
 
 # Display existing skills
 student_id = st.session_state.get('student_id', 1)  # Example of retrieving student ID from session state
+
+# Initialize skills variable
+skills = []
+
 try:
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -47,6 +57,8 @@ try:
 except mysql.connector.Error as err:
     logger.error(f"Error: {err}")
     st.error("Error loading skills.")
+    # Set skills to an empty list in case of failure
+    skills = []
 
 st.write("\n\n")
 
