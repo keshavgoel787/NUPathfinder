@@ -11,19 +11,15 @@ st.set_page_config(layout = 'wide')
 # Show appropriate sidebar links for the role of the currently logged in user
 SideBarLinks()
 
-st.title(f"Here are your job listings:, {st.session_state['rec_id']}.")
+st.title(f"Here are your job listings:, {st.session_state['first_name']}.")
 st.write('')
 st.write('')
 
-url = f"http://localhost:8501/r/listings/{st.session_state['rec_id']}"
+url = f"http://api:4000/r/Listings/{st.session_state['rec_id']}"
 
-listings:pd.DataFrame = requests.get(url)
-st.dataframe(listings)
-
+listings = requests.get(url).json()
 
 
+df = pd.DataFrame(listings)
 
-if st.button('Add another', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/AddListing.py')
+st.write(df)
