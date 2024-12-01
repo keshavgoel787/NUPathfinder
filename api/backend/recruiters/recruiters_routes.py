@@ -9,6 +9,10 @@ from flask import make_response
 from flask import current_app
 from backend.db_connection import db
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 #------------------------------------------------------------
 # Create a new Blueprint object, which is a collection of 
 # routes.
@@ -83,9 +87,8 @@ def get_Applicant_Skills(Student_Id):
 
 
 #add a job to the jobs table in the database
-@recruiters.route("/addJob", methods = ['POST'])
-def addJob():
-
+@recruiters.route("/addJob/<rec_Id>", methods = ['POST'])
+def addJob(rec_Id):
     the_data = request.json
     current_app.logger.info(the_data)
 
@@ -93,21 +96,21 @@ def addJob():
     description = the_data['description']
     startDate = the_data['startDate']
     endDate = the_data['endDate']
-    recId = the_data['recId']
+    recId = rec_Id
 
 
-    query = f'''
+    query = '''
         INSERT INTO jobs (position, description, startDate, endDate, recID)
 
-        VALUES ({position}, {description}, {startDate}, {endDate}, {rec_Id})
+        VALUES (%s, %s, %s, %s, %s);
     '''
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, (position, description, startDate, endDate, recId))
     db.get_db().commit()
     
-    response = make_response("Successfully added product")
+    response = make_response("Successfully added job")
     response.status_code = 200
     return response
