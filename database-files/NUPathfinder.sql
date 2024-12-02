@@ -453,3 +453,7 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
+
+INSERT INTO skills (name, description, category)
+VALUES
+('MATLAB', 'Engineering', 'Applications');
