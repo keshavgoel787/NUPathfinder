@@ -10,6 +10,9 @@ from flask import make_response
 from flask import current_app
 from backend.db_connection import db
 
+import logging
+logger = logging.getLogger(__name__)
+
 #------------------------------------------------------------
 # Create a new Blueprint object, which is a collection of 
 # routes.
@@ -35,20 +38,18 @@ def get_listings():
     return response
 
 # ------------------------------------------------------------
-# Get specific listing details by ID
-@students.route('/jobs/<id>', methods=['GET'])
-def get_listing_detail(id):
+# Get all skills from a student
+@students.route('/studentSkills/<studentID>', methods=['GET'])
+def get_student_skills(studentID):
     query = '''
-        SELECT jobID, position, startDate, endDate, description
-        FROM jobs
-        WHERE jobID = %s
+        SELECT name, proficiency
+        FROM studentSkills
+        WHERE studentID = %s
     '''
-    current_app.logger.info(f'GET /listing/<id> query={query}')
+    current_app.logger.info(f'GET /studentSkills/{studentID} query={query}')
     cursor = db.get_db().cursor()
-    cursor.execute(query, (id,))
+    cursor.execute(query, (studentID,))
     theData = cursor.fetchall()
-
-    current_app.logger.info(f'GET /listing/<id> Result of query = {theData}')
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
