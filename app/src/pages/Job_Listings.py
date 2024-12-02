@@ -30,8 +30,8 @@ if st.button('Search', type='primary', use_container_width=True):
             if job_listings:
                 st.write("### Search Results")
                 for job in job_listings:
-                    st.write(f"Job Title: {job['title']}")
-                    st.write(f"Company: {job['company']}")
+                    st.write(f"Job Title: {job['position']}")
+                    st.write(f"Company: {job['name']}")
                     st.write(f"Start Date: {job['startDate']}")
                     st.write(f"End Date: {job['endDate']}")
                     st.write(f"Description: {job['description']}")
@@ -53,8 +53,8 @@ try:
     if job_listings:
         st.write("### Random Job Listings")
         for job in job_listings:
-            st.write(f"Job Title: {job['title']}")
-            st.write(f"Company: {job['company']}")
+            st.write(f"Job Title: {job['position']}")
+            st.write(f"Company: {job['name']}")
             st.write(f"Start Date: {job['startDate']}")
             st.write(f"End Date: {job['endDate']}")
             st.write(f"Description: {job['description']}")

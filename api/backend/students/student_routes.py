@@ -26,8 +26,10 @@ students = Blueprint('students', __name__)
 @students.route('/jobs', methods=['GET'])
 def get_listings():
     query = '''
-        SELECT jobID, position, startDate, endDate, description
-        FROM jobs
+        SELECT j.jobID, j.position, j.startDate, j.endDate, j.description, c.name
+        FROM jobs j
+        JOIN Recruiters r ON j.recID = r.recID
+        JOIN Companies c ON r.companyID = c.companyID
     '''
     cursor = db.get_db().cursor()
     cursor.execute(query)
