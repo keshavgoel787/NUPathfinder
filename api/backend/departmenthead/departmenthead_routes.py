@@ -18,10 +18,27 @@ departmenthead = Blueprint('departmenthead', __name__)
 @departmenthead.route('/Gaps', methods=['GET'])
 def get_listings():
     query = f'''
-        SELECT *
-        FROM SkillsGap
+        INSERT INTO SkillsGap (name)
+        SELECT js.name
+        FROM jobsSkills js
+        LEFT JOIN studentSkills ss
+        ON js.name = ss.name
+        WHERE ss.name IS NULL
+        AND NOT EXISTS (
+            SELECT 1
+            FROM SkillsGap sg
+            WHERE sg.name = js.name)
     '''
     
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    query = f'''
+        SELECT * 
+        FROM SkillsGap
+    '''
+
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
@@ -35,8 +52,9 @@ def get_listings():
 @departmenthead.route('/totalstudent', methods = ['GET'])
 def get_total_student():
     query = f'''
-        SELECT *
+        SELECT Count(name) as total, name
         FROM studentSkills
+        GROUP BY name
     '''
     cursor = db.get_db().cursor()
 
@@ -89,4 +107,3 @@ def add_note(department_ID):
         response = make_response(jsonify(theData))
         response.status_code = 200
         return response
-    

@@ -22,6 +22,8 @@ st.set_page_config(layout = 'wide')
 # in the streamlit session_state to false. 
 st.session_state['authenticated'] = False
 
+st.session_state['recState'] = 'not initialized'
+
 # Use the SideBarLinks function from src/modules/nav.py to control
 # the links displayed on the left-side panel. 
 # IMPORTANT: ensure src/.streamlit/config.toml sets
@@ -61,7 +63,7 @@ if st.button('Act as Jane Dough, a Recruiter',
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'Recruiter'
+    st.session_state['role'] = 'recruiter'
     st.session_state['first_name'] = 'Jane'
     st.session_state['rec_id'] = 1
     st.switch_page('pages/Job_Recruiter.py')

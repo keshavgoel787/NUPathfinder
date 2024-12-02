@@ -16,12 +16,20 @@ st.write('')
 st.write('')
 st.write('### What would you like to do today?')
 
-if st.button('View Your Current Job Listings', 
+if st.button('View Your Current Job Listings',   
              type='primary',
              use_container_width=True):
+  st.session_state['recState'] = 'listing'
   st.switch_page('pages/Listings.py')
 
-if st.button('Add a new job listing', 
+if st.button('Add a new job listing',
+             type='primary',
+             use_container_width=True): 
+  st.session_state['recState'] = 'adding'
+  st.switch_page('pages/AddListings.py')
+
+if st.button('Match jobs and skills',   
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/AddListing.py')
+  st.session_state['recState'] = 'adding'
+  st.switch_page('pages/jobSkill.py')

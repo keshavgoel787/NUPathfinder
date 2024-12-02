@@ -21,3 +21,10 @@ skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 st.subheader('Skill Gaps to Address')
 for i in skill_gaps:
     st.write(i['name'])
+
+student_skills = requests.get('http://api:4000/d/totalstudent').json()
+
+st.subheader('Total Student Skill Count')
+for i in student_skills:
+    st.write(i['name'], i['total'])
+
