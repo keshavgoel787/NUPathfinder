@@ -25,7 +25,7 @@ def get_listings():
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
-    
+
 
     theData = cursor.fetchall() 
 
@@ -36,8 +36,9 @@ def get_listings():
 @departmenthead.route('/totalstudent', methods = ['GET'])
 def get_total_student():
     query = f'''
-        SELECT *
+        SELECT Count(name) as total, name
         FROM studentSkills
+        GROUP BY name
     '''
     cursor = db.get_db().cursor()
 
