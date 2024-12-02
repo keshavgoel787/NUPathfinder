@@ -35,7 +35,7 @@ def get_listings():
     cursor.execute(query)
 
     query = f'''
-        SELECT DISTINCT * 
+        SELECT * 
         FROM SkillsGap
     '''
 
