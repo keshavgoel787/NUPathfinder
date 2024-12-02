@@ -19,8 +19,8 @@ students = Blueprint('students', __name__)
 # Get all the students from the database, package them up,
 # and return them to the client
 # ------------------------------------------------------------
-# Get all the students from the database
-@students.route('/students', methods=['GET'])
+# Get all the job listings from the database
+@students.route('/jobs', methods=['GET'])
 def get_listings():
     query = '''
         SELECT jobID, position, startDate, endDate, description
@@ -55,25 +55,23 @@ def get_listing_detail(id):
 
 # ------------------------------------------------------------
 # Add a new skill to a student
-@students.route('/addSkill', methods=['POST'])
+@students.route('/studentSkills/<studentID>', methods=['POST'])
 def add_new_skill():
     the_data = request.json
     current_app.logger.info(the_data)
 
     # Extracting the variables
     name = the_data['skill_name']
-    description = the_data['skill_description']
-    category = the_data['skill_category']
     student_ID = the_data['student_id']
     proficiency = the_data['skill_proficiency']
 
     query = '''
-        INSERT INTO skills (skill_name, description, category, student_ID, proficiency)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO studentSkills (studentID, name, proficiency)
+        VALUES (%s, %s, %s)
     '''
     current_app.logger.info(query)
     cursor = db.get_db().cursor()
-    cursor.execute(query, (name, description, category, student_ID, proficiency))
+    cursor.execute(query, (student_ID, name, proficiency))
     db.get_db().commit()
 
     response = make_response("Successfully added skill")
@@ -81,24 +79,24 @@ def add_new_skill():
     return response
 
 # ------------------------------------------------------------
-# Update a skill for a student by skill ID
-@students.route('/skill/<id>', methods=['PUT'])
-def update_skill(id):
+# Update a skill for a student
+@students.route('/studentSkills/<studentID>/<skill_name>', methods=['PUT'])
+def update_skill(studentID,skill_name):
     skill_info = request.json
     current_app.logger.info(skill_info)
 
     # Extracting variables to update
     proficiency = skill_info.get('proficiency', None)
-    description = skill_info.get('description', None)
 
     query = '''
-        UPDATE skills
-        SET proficiency = %s, description = %s
-        WHERE id = %s
+        UPDATE studentSkills
+        SET proficiency = %s
+        WHERE studentID = %s AND name = %s
     '''
     current_app.logger.info(query)
     cursor = db.get_db().cursor()
-    cursor.execute(query, (proficiency, description, id))
+    skill_name = skill_info.get('skill_name')
+    cursor.execute(query, (proficiency, studentID, skill_name))
     db.get_db().commit()
 
     response = make_response("Successfully updated skill")
@@ -106,20 +104,20 @@ def update_skill(id):
     return response
 
 # ------------------------------------------------------------
-# Delete a skill by skill ID
-@students.route('/skill/<id>', methods=['DELETE'])
-def delete_skill(id):
-    current_app.logger.info(f'Deleting skill with id {id}')
+# Delete a skill from a student
+@students.route('/studentSkills/<student_id>/<skill_name>', methods=['DELETE'])
+def delete_skill(student_id, skill_name):
+    current_app.logger.info(f'Deleting skill for student {student_id} with name {skill_name}')
     
     query = '''
-        DELETE FROM skills
-        WHERE id = %s
+        DELETE FROM studentSkills
+        WHERE studentID = %s AND name = %s
     '''
-    current_app.logger.info(query)
     cursor = db.get_db().cursor()
-    cursor.execute(query, (id,))
+    cursor.execute(query, (student_id, skill_name))
     db.get_db().commit()
 
-    response = make_response(f"Successfully deleted skill with id {id}")
+    response = make_response(f"Successfully deleted skill for student {student_id} with name {skill_name}")
     response.status_code = 200
     return response
+
