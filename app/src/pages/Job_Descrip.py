@@ -12,14 +12,15 @@ SideBarLinks(show_home=True)
 st.title("Job Description")
 
 # Base API URL
-url = 'http://api:4000/j'
+urlJ = 'http://api:4000/j'
+urlS = 'http://api:4000/s'
 
 # Check if a job ID is in the session state
 if 'selected_job_id' in st.session_state:
     job_id = st.session_state['selected_job_id']
     try:
         # Fetch job details using the API
-        response = requests.get(f"{url}/jobs/{job_id}")
+        response = requests.get(f"{urlJ}/jobs/{job_id}")
         response.raise_for_status()
         job_details = response.json()
 
@@ -32,12 +33,13 @@ if 'selected_job_id' in st.session_state:
             st.write(f"**End Date:** {job['endDate']}")
             st.write(f"**Description:** {job['description']}")
 
-            # Fetch job reviews using the API
-            response = requests.get(f"{url}/reviews/{job_id}")
+            # Fetch job reviews using the correct API route
+            response = requests.get(f"{urlS}/reviews/{job_id}")
             response.raise_for_status()
             reviews = response.json()
 
             if reviews:
+                st,write("---")
                 st.write("### Job Reviews")
                 for review in reviews:
                     st.write(f"**Title:** {review['title']}")
@@ -54,3 +56,4 @@ if 'selected_job_id' in st.session_state:
         st.error("Error loading job details or reviews.")
 else:
     st.write("No job selected. Please go back and select a job from the listings.")
+
