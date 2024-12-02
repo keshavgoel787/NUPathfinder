@@ -13,7 +13,7 @@ st.title("My Profile")
 st.write("\n\n")
 
 # Base API URL
-url = 'http://localhost:4000/s'
+url = 'http://api:4000/s'
 
 # Initialize skills variable
 skills = []
