@@ -32,8 +32,6 @@ if st.button('Search', type='primary', use_container_width=True):
                 for job in job_listings:
                     st.write(f"Job Title: {job['position']}")
                     st.write(f"Company: {job['name']}")
-                    st.write(f"Start Date: {job['startDate']}")
-                    st.write(f"End Date: {job['endDate']}")
                     st.write(f"Description: {job['description']}")
                     st.write("---")
             else:
@@ -55,8 +53,6 @@ try:
         for job in job_listings:
             st.write(f"Job Title: {job['position']}")
             st.write(f"Company: {job['name']}")
-            st.write(f"Start Date: {job['startDate']}")
-            st.write(f"End Date: {job['endDate']}")
             st.write(f"Description: {job['description']}")
             st.write("---")
     else:

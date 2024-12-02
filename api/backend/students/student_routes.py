@@ -26,7 +26,7 @@ students = Blueprint('students', __name__)
 @students.route('/jobs', methods=['GET'])
 def get_listings():
     query = '''
-        SELECT j.jobID, j.position, j.startDate, j.endDate, j.description, c.name
+        SELECT j.jobID, j.position, j.description, c.name
         FROM jobs j
         JOIN Recruiters r ON j.recID = r.recID
         JOIN Companies c ON r.companyID = c.companyID
@@ -83,26 +83,37 @@ def add_new_skill(studentID):
 # ------------------------------------------------------------
 # Update a skill for a student
 @students.route('/studentSkills/<studentID>/<skill_name>', methods=['PUT'])
-def update_skill(studentID,skill_name):
+def update_skill(studentID, skill_name):
     skill_info = request.json
     current_app.logger.info(skill_info)
 
     # Extracting variables to update
     proficiency = skill_info.get('proficiency', None)
 
+    # Ensure proficiency is provided
+    if proficiency is None:
+        response = make_response("Missing 'proficiency' field in request data")
+        response.status_code = 400
+        return response
+
     query = '''
         UPDATE studentSkills
         SET proficiency = %s
         WHERE studentID = %s AND name = %s
     '''
-    current_app.logger.info(query)
+    current_app.logger.info(f"Executing query: {query} with values ({proficiency}, {studentID}, {skill_name})")
     cursor = db.get_db().cursor()
-    skill_name = skill_info.get('skill_name')
     cursor.execute(query, (proficiency, studentID, skill_name))
     db.get_db().commit()
 
-    response = make_response("Successfully updated skill")
-    response.status_code = 200
+    # Check if any rows were updated
+    if cursor.rowcount == 0:
+        response = make_response("No skill found to update")
+        response.status_code = 404
+    else:
+        response = make_response("Successfully updated skill")
+        response.status_code = 200
+
     return response
 
 # ------------------------------------------------------------
@@ -123,3 +134,4 @@ def delete_skill(student_id, skill_name):
     response.status_code = 200
     return response
 
+#@students.route('/jobs/<jobID>', methods=['GET'])
