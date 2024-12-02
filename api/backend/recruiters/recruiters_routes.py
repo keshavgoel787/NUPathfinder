@@ -24,6 +24,7 @@ recruiters = Blueprint('recruiters', __name__)
 def get_listings(rec_Id):
     query = f'''
         SELECT 
+         jobId,
          position, 
          description, 
          startDate,
@@ -112,5 +113,52 @@ def addJob(rec_Id):
     db.get_db().commit()
     
     response = make_response("Successfully added job")
+    response.status_code = 200
+    return response
+
+
+    #get the skills of a specific student
+@recruiters.route('/jobs/skills', methods=['GET'])
+def get_Job_Skills():
+    query = f'''
+        SELECT * from skills;
+    '''
+    
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+#add a job to the jobs table in the database
+@recruiters.route("/addSkillJob", methods = ['POST'])
+def addSkillJob():
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+
+
+    jobId = the_data['jobId']
+    skillName = the_data['skill']
+    skillProficiency = the_data['level']
+
+
+    query2 = '''
+        INSERT INTO jobsSkills (jobID, name, proficiency)
+        VALUES
+        (%s, %s, %s)
+    '''
+    current_app.logger.info(query2)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query2, (jobId, skillName, skillProficiency))
+    db.get_db().commit()
+    
+    response = make_response("Successfully added match")
     response.status_code = 200
     return response
