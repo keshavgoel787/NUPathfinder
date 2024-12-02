@@ -66,6 +66,24 @@ def get_total_student():
     response.status_code = 200
     return response
 
+@departmenthead.route('/totaljob', methods = ['GET'])
+def get_total_job():
+    query = f'''
+        SELECT Count(name) as total, name
+        FROM jobsSkills
+        GROUP BY name
+    '''
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+
 @departmenthead.route('/Note/<department_ID>', methods = ['GET','POST'])
 def add_note(department_ID):
     if request.method == 'POST':

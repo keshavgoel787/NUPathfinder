@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS studentSkills (
     proficiency int NOT NULL,
     PRIMARY KEY (studentID, name),
     FOREIGN KEY (studentID) REFERENCES students(studentID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Job Skills Table
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS jobsSkills (
     proficiency INT NOT NULL,
     PRIMARY KEY (jobID, name),
     FOREIGN KEY (jobID) REFERENCES jobs(jobID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Applications Table
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS CourseSkills (
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (courseID, name),
     FOREIGN KEY (courseID) REFERENCES Courses(courseID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Notes Table
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS SkillsGap (
     name VARCHAR(100) NOT NULL,
     analysisID INT AUTO_INCREMENT NOT NULL,
     PRIMARY KEY (analysisID, name),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS SkillsGapAnalysis;
@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS SkillsTrend (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     PRIMARY KEY (trendID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- IndustryTrend Table
@@ -394,16 +394,6 @@ VALUES
 (2, 'Discuss research opportunities with faculty.');
 
 
-INSERT INTO SkillsGap (name)
-SELECT js.name FROM
-        jobsSkills js
-    LEFT JOIN
-        studentSkills ss
-    ON
-        js.name = ss.name
-    WHERE
-        ss.name IS NULL;
-
 -- Insert Sample Data into SkillsTrend
 INSERT INTO SkillsTrend (name, description)
 VALUES
@@ -454,7 +444,3 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
-
-INSERT INTO skills (name, description, category)
-VALUES
-('MATLAB', 'Engineering', 'Applications');
