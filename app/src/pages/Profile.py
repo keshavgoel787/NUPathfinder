@@ -58,8 +58,8 @@ with st.form("add_skill_form"):
         else:
             try:
                 data = {
-                    "skill_name": skill_name,
                     "student_id": student_id,
+                    "skill_name": skill_name,
                     "skill_proficiency": skill_proficiency
                 }
                 response = requests.post(f"{url}/studentSkills/{student_id}", json=data)

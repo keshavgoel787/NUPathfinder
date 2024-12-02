@@ -59,13 +59,12 @@ def get_student_skills(studentID):
 # ------------------------------------------------------------
 # Add a new skill to a student
 @students.route('/studentSkills/<studentID>', methods=['POST'])
-def add_new_skill():
+def add_new_skill(studentID):
     the_data = request.json
     current_app.logger.info(the_data)
 
     # Extracting the variables
     name = the_data['skill_name']
-    student_ID = the_data['student_id']
     proficiency = the_data['skill_proficiency']
 
     query = '''
@@ -74,7 +73,7 @@ def add_new_skill():
     '''
     current_app.logger.info(query)
     cursor = db.get_db().cursor()
-    cursor.execute(query, (student_ID, name, proficiency))
+    cursor.execute(query, (studentID, name, proficiency))
     db.get_db().commit()
 
     response = make_response("Successfully added skill")
