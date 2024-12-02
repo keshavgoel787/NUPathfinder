@@ -131,7 +131,7 @@ DROP TABLE IF EXISTS studentSkills;
 CREATE TABLE IF NOT EXISTS studentSkills (
     studentID INT NOT NULL,
     name VARCHAR(100) NOT NULL,
-    proficiency VARCHAR(50) NOT NULL,
+    proficiency int NOT NULL,
     PRIMARY KEY (studentID, name),
     FOREIGN KEY (studentID) REFERENCES students(studentID),
     FOREIGN KEY (name) REFERENCES skills(name)
@@ -142,6 +142,7 @@ DROP TABLE IF EXISTS jobsSkills;
 CREATE TABLE IF NOT EXISTS jobsSkills (
     jobID INT NOT NULL,
     name VARCHAR(100) NOT NULL,
+    proficiency INT NOT NULL,
     PRIMARY KEY (jobID, name),
     FOREIGN KEY (jobID) REFERENCES jobs(jobID),
     FOREIGN KEY (name) REFERENCES skills(name)
@@ -332,17 +333,17 @@ VALUES
 -- Insert Sample Data into Student Skills
 INSERT INTO studentSkills (studentID, name, proficiency)
 VALUES
-(1, 'Python', 'Advanced'),
-(2, 'Data Analysis', 'Intermediate'),
-(3, 'Prototyping', 'Basic');
+(1, 'Python', 4),
+(2, 'Data Analysis', 3),
+(3, 'Prototyping', 1);
 
 -- Insert Sample Data into Job Skills
-INSERT INTO jobsSkills (jobID, name)
+INSERT INTO jobsSkills (jobID, name, proficiency)
 VALUES
-(1, 'Python'),
-(2, 'Data Analysis'),
-(3, 'Prototyping'),
-(4, 'Java');
+(1, 'Python', 1),
+(2, 'Data Analysis', 4),
+(3, 'Prototyping', 3),
+(4, 'Java', 2);
 -- Insert Sample Data into Applications
 INSERT INTO application (studentID, jobID, matchPercent, status)
 VALUES

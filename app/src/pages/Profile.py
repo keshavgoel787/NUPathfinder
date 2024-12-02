@@ -1,12 +1,7 @@
 import streamlit as st
-import mysql.connector
+import requests
 import logging
-import os
-#from dotenv import load_dotenv
 from modules.nav import SideBarLinks
-
-# Load environment variables from .env file
-#load_dotenv()
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,47 +12,32 @@ SideBarLinks(show_home=True)
 st.title("My Profile")
 st.write("\n\n")
 
-# Connect to the MySQL database
-def get_db_connection():
-    return mysql.connector.connect(
-        host='db',  # Load host from .env file
-        user='root',  # Load user from .env file
-        password='BillyBobJoe',  # Load password from .env file
-        database='NUPathfinder'
-    )
-
-# Display existing skills
-student_id = st.session_state.get('student_id', 1)  # Example of retrieving student ID from session state
+# Base API URL
+url = 'http://api:4000/s'
 
 # Initialize skills variable
 skills = []
 
+# Fetch student ID from session or use default
+student_id = st.session_state.get('student_id', 1)
+
 try:
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    # Retrieve student's skills from the database
-    query = '''
-        SELECT ss.name AS skill_name, ss.proficiency, s.description
-        FROM studentSkills ss
-        JOIN skills s ON ss.name = s.name
-        WHERE ss.studentID = %s
-    '''
-    cursor.execute(query, (student_id,))
-    skills = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    # Retrieve student's skills from the API
+    response = requests.get(f"{url}/studentSkills/{student_id}")
+    logger.info(f"Request URL: {response.url}")
+    response.raise_for_status()
+    skills = response.json()
+    logger.info(f"Skills fetched: {skills}")
 
     if skills:
         st.write("### Current Skills")
         for skill in skills:
-            st.write(f"Skill: {skill['skill_name']}, Proficiency: {skill['proficiency']}")
-            st.write(f"Description: {skill['description']}")
+            st.write(f"Skill: {skill['name']}, Proficiency: {skill['proficiency']}")
     else:
         st.write("You currently have no skills listed.")
-except mysql.connector.Error as err:
-    logger.error(f"Error: {err}")
+except requests.RequestException as err:
+    logger.error(f"Error: {err}, Response: {err.response.text if err.response else 'No response'}")
     st.error("Error loading skills.")
-    # Set skills to an empty list in case of failure
     skills = []
 
 st.write("\n\n")
@@ -65,81 +45,69 @@ st.write("\n\n")
 if 'reload' not in st.session_state:
     st.session_state['reload'] = False
 
-
 # Add a new skill
-st.write("### Add a New Skill")
-skill_name = st.text_input("Skill Name")
-skill_proficiency = st.slider("Proficiency (1-5)", 1, 5, 1)
+with st.form("add_skill_form"):
+    st.write("### Add a New Skill")
+    skill_name = st.text_input("Skill Name")
+    skill_proficiency = st.slider("Proficiency (1-5)", 1, 5, 1)
+    submit_button = st.form_submit_button("Add Skill")
 
-if st.button('Add Skill', type='primary', use_container_width=True):
-    if skill_name:
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            query = '''
-                INSERT INTO studentSkills (studentID, name, proficiency)
-                VALUES (%s, %s, %s)
-            '''
-            cursor.execute(query, (student_id, skill_name, skill_proficiency))
-            conn.commit()
-            cursor.close()
-            conn.close()
-            st.success("Successfully added skill.")
-            st.session_state['reload'] = True
-        except mysql.connector.Error as err:
-            logger.error(f"Error: {err}")
-            st.error("Failed to add skill.")
-    else:
-        st.warning("Please enter a skill name.")
+    if submit_button:
+        if not skill_name:
+            st.error("Please enter a skill name")
+        else:
+            try:
+                data = {
+                    "student_id": student_id,
+                    "skill_name": skill_name,
+                    "skill_proficiency": skill_proficiency
+                }
+                response = requests.post(f"{url}/studentSkills/{student_id}", json=data)
+                response.raise_for_status()
+                st.success("Successfully added skill.")
+                st.session_state['reload'] = True
+            except requests.RequestException as err:
+                logger.error(f"Error: {err}")
+                st.error("Failed to add skill.")
 
 # Update skill proficiency
-st.write("### Update Skill Proficiency")
-skill_to_update = st.selectbox("Select Skill to Update", [skill['skill_name'] for skill in skills] if skills else [])
-new_proficiency = st.slider("New Proficiency (1-5)", 1, 5, 1, key='update')
+with st.form("update_skill_form"):
+    st.write("### Update Skill Proficiency")
+    skill_to_update = st.selectbox("Select Skill to Update", [skill['name'] for skill in skills] if skills else [])
+    new_proficiency = st.slider("New Proficiency (1-5)", 1, 5, 1, key='update')
+    update_button = st.form_submit_button("Update Skill")
 
-if st.button('Update Skill', type='primary', use_container_width=True):
-    if skill_to_update:
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            query = '''
-                UPDATE studentSkills
-                SET proficiency = %s
-                WHERE studentID = %s AND name = %s
-            '''
-            cursor.execute(query, (new_proficiency, student_id, skill_to_update))
-            conn.commit()
-            cursor.close()
-            conn.close()
-            st.success("Successfully updated skill proficiency.")
-            st.session_state['reload'] = True
-        except mysql.connector.Error as err:
-            logger.error(f"Error: {err}")
-            st.error("Failed to update skill.")
-    else:
-        st.warning("Please select a skill to update.")
+    if update_button:
+        if not skill_to_update:
+            st.warning("Please select a skill to update.")
+        else:
+            try:
+                data = {
+                    "proficiency": new_proficiency
+                }
+                response = requests.put(f"{url}/studentSkills/{student_id}/{skill_to_update}", json=data)
+                response.raise_for_status()
+                st.success("Successfully updated skill proficiency.")
+                st.session_state['reload'] = True
+            except requests.RequestException as err:
+                logger.error(f"Error: {err}")
+                st.error("Failed to update skill.")
 
 # Delete a skill
-st.write("### Delete a Skill")
-skill_to_delete = st.selectbox("Select Skill to Delete", [skill['skill_name'] for skill in skills] if skills else [], key='delete')
+with st.form("delete_skill_form"):
+    st.write("### Delete a Skill")
+    skill_to_delete = st.selectbox("Select Skill to Delete", [skill['name'] for skill in skills] if skills else [], key='delete')
+    delete_button = st.form_submit_button("Delete Skill")
 
-if st.button('Delete Skill', type='primary', use_container_width=True):
-    if skill_to_delete:
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            query = '''
-                DELETE FROM studentSkills
-                WHERE studentID = %s AND name = %s
-            '''
-            cursor.execute(query, (student_id, skill_to_delete))
-            conn.commit()
-            cursor.close()
-            conn.close()
-            st.success("Successfully deleted skill.")
-            st.session_state['reload'] = True
-        except mysql.connector.Error as err:
-            logger.error(f"Error: {err}")
-            st.error("Failed to delete skill.")
-    else:
-        st.warning("Please select a skill to delete.")
+    if delete_button:
+        if not skill_to_delete:
+            st.warning("Please select a skill to delete.")
+        else:
+            try:
+                response = requests.delete(f"{url}/studentSkills/{student_id}/{skill_to_delete}")
+                response.raise_for_status()
+                st.success("Successfully deleted skill.")
+                st.session_state['reload'] = True
+            except requests.RequestException as err:
+                logger.error(f"Error: {err}")
+                st.error("Failed to delete skill.")

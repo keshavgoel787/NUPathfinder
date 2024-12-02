@@ -27,3 +27,9 @@ if st.button('Add a new job listing',
              use_container_width=True): 
   st.session_state['recState'] = 'adding'
   st.switch_page('pages/AddListings.py')
+
+if st.button('Match jobs and skills',   
+             type='primary',
+             use_container_width=True):
+  st.session_state['recState'] = 'adding'
+  st.switch_page('pages/jobSkill.py')

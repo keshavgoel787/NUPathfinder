@@ -96,6 +96,9 @@ def SideBarLinks(show_home=False):
                 listingsNav()
             elif st.session_state["recState"] == "adding":
                 addingNav()
+            elif st.session_state["recState"] == "adding":
+                listingsNav()
+                addingNav()
 
         # If the user is an administrator, give them access to the administrator pages
         if st.session_state["role"] == "administrator":
