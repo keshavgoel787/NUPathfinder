@@ -134,4 +134,52 @@ def delete_skill(student_id, skill_name):
     response.status_code = 200
     return response
 
-#@students.route('/jobs/<jobID>', methods=['GET'])
+
+# ------------------------------------------------------------
+# Get reviews of a job listing
+@students.route('/reviews/<jobID>', methods=['GET'])
+def get_reviews(jobID):
+    query = '''
+        SELECT title, username, review, rating
+        FROM experiences
+        WHERE jobID = %s
+    '''
+    current_app.logger.info(f'GET /reviews/{jobID} query={query}')
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (jobID,))
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+
+# Add a new review for a job listing
+@students.route('/reviews/<jobID>', methods=['POST'])
+def add_review(jobID):
+    the_data = request.json
+    current_app.logger.info(f"Received review data: {the_data}")
+
+    try:
+        # Extracting the variables
+        title = the_data['title']
+        username = the_data['username']
+        review = the_data['review']
+        rating = the_data['rating']
+
+        query = '''
+            INSERT INTO experiences (title, username, review, rating, jobID)
+            VALUES (%s, %s, %s, %s, %s)
+        '''
+        current_app.logger.info(f"Executing query: {query} with values ({title}, {username}, {review}, {rating}, {jobID})")
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (title, username, review, rating, jobID))
+        db.get_db().commit()
+
+        response = make_response("Successfully added review")
+        response.status_code = 200
+    except Exception as e:
+        current_app.logger.error(f"Error occurred while adding review: {e}")
+        response = make_response("Failed to add review")
+        response.status_code = 500
+
+    return response
