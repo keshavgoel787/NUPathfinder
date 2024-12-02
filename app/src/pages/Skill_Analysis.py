@@ -11,17 +11,11 @@ logger = logging.getLogger(__name__)
 
 SideBarLinks()
 
-
 # Set the page title
 st.title("Skill Analysis")
 st.write("\n\n")
 
 department_id = st.session_state.get('department_ID', 1)
-skill_gaps = requests.get('http://api:4000/d/Gaps').json()
-
-st.subheader('Skill Gaps to Address')
-for i in skill_gaps:
-    st.write(i['name'])
 
 student_skills = requests.get('http://api:4000/d/totalstudent').json()
 skillname = []
@@ -56,3 +50,12 @@ df2 = pd.DataFrame(
 )
 
 st.bar_chart(df2, x = 'Skills', y='Skill Total')
+
+skill_gaps = requests.get('http://api:4000/d/Gaps').json()
+
+st.subheader('Skill Gaps to Address')
+if len(skill_gaps)<1:
+    st.write("No Skill Gaps to Address")
+else:
+    for i in skill_gaps:
+        st.write(i['name'])
