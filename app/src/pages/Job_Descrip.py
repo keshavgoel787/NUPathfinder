@@ -31,10 +31,26 @@ if 'selected_job_id' in st.session_state:
             st.write(f"**Start Date:** {job['startDate']}")
             st.write(f"**End Date:** {job['endDate']}")
             st.write(f"**Description:** {job['description']}")
+
+            # Fetch job reviews using the API
+            response = requests.get(f"{url}/reviews/{job_id}")
+            response.raise_for_status()
+            reviews = response.json()
+
+            if reviews:
+                st.write("### Job Reviews")
+                for review in reviews:
+                    st.write(f"**Title:** {review['title']}")
+                    st.write(f"**Username:** {review['username']}")
+                    st.write(f"**Review:** {review['review']}")
+                    st.write(f"**Rating:** {review['rating']}")
+                    st.write("---")
+            else:
+                st.write("No reviews available for this job.")
         else:
             st.write("Job details not found.")
     except requests.RequestException as err:
         logger.error(f"Error: {err}")
-        st.error("Error loading job details.")
+        st.error("Error loading job details or reviews.")
 else:
     st.write("No job selected. Please go back and select a job from the listings.")
