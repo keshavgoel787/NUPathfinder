@@ -349,6 +349,8 @@ VALUES
 INSERT INTO application (studentID, jobID, matchPercent, status)
 VALUES
 (1, 1, 85, 'Submitted'),
+(2, 1, 34, 'Interviewing'),
+(3, 1, 91, 'Submitted'),
 (2, 2, 90, 'Interviewing'),
 (3, 3, 75, 'Submitted');
 

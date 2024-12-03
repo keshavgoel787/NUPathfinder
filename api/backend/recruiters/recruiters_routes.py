@@ -61,10 +61,6 @@ def get_Applicants(Job_id):
 
     theData = cursor.fetchall() 
 
-    # response = make_response(theData)
-    # response.status_code = 200
-    # response.mimetype='application/json'
-
     return jsonify(theData)
 
 #get the skills of a specific student
@@ -160,5 +156,34 @@ def addSkillJob():
     db.get_db().commit()
     
     response = make_response("Successfully added match")
+    response.status_code = 200
+    return response
+
+
+
+
+@recruiters.route("/addSkill", methods = ['POST'])
+def addSkill():
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    name = the_data['name']
+    description = the_data['description']
+    category = the_data['category']
+
+
+    query = '''
+        INSERT INTO skills (name, description, category)
+
+        VALUES (%s, %s, %s);
+    '''
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (name, description, category))
+    db.get_db().commit()
+    
+    response = make_response("Successfully added skill")
     response.status_code = 200
     return response

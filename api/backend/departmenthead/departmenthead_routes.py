@@ -125,3 +125,17 @@ def add_note(department_ID):
         response = make_response(jsonify(theData))
         response.status_code = 200
         return response
+    
+@departmenthead.route('/Note/<department_ID>/<noteID>', methods = ['DELETE'])
+def delete_note(department_ID, noteID):
+    query = '''
+        DELETE FROM Notes
+        WHERE userID = %s AND noteID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (department_ID, noteID))
+    db.get_db().commit()
+
+    response = make_response("Succesfully Deleted Note")
+    response.status_code = 200
+    return response
