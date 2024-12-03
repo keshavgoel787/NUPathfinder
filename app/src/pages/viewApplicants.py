@@ -76,4 +76,6 @@ for _, row in sorted_df.iterrows():
         st.write(f"**Application Status:** {row['Application Status']}")
         st.write(f"**Date of Application:** {row['Date of Application']}")
 
+
+        applicants = requests.get(f"http://api:4000/r/applicants/{st.session_state['applicant_job_id']}").json()
         #add skills
