@@ -61,10 +61,6 @@ def get_Applicants(Job_id):
 
     theData = cursor.fetchall() 
 
-    # response = make_response(theData)
-    # response.status_code = 200
-    # response.mimetype='application/json'
-
     return jsonify(theData)
 
 #get the skills of a specific student
