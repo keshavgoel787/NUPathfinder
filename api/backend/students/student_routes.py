@@ -41,6 +41,7 @@ def get_listings():
     response.status_code = 200
     return response
 
+
 # ------------------------------------------------------------
 # Get all skills from a student
 @students.route('/studentSkills/<studentID>', methods=['GET'])
@@ -187,3 +188,46 @@ def add_review(Username, jobID):
 
     return response
 
+#
+# Add a new application for a student
+@students.route('/application/<int:studentID>', methods=['POST'])
+def submit_application(studentID):
+    the_data = request.json
+    current_app.logger.info(f"Received application data: {the_data}")
+
+    try:
+        # Extracting the variables from the input data
+        jobID = the_data.get('jobID')
+        status = the_data.get('status', 'Submitted')
+        date_of_application = the_data.get('dateOfApplication')  # Default to a specific date if not provided
+
+        # Ensure all necessary fields are present
+        if not jobID:
+            raise ValueError("Missing required field: jobID.")
+
+        # Insert a new application into the application table
+        query = '''
+            INSERT INTO application (studentID, jobID, dateOfApplication, status)
+            VALUES (%s, %s, %s, %s)
+        '''
+        cursor = db.get_db().cursor()
+        current_app.logger.info(f"Executing query: {query} with values ({studentID}, {jobID}, {date_of_application}, {status})")
+        cursor.execute(query, (studentID, jobID, date_of_application, status))
+        db.get_db().commit()
+
+        current_app.logger.info(f"Inserted new application for studentID={studentID}, jobID={jobID}")
+        response = make_response("Successfully submitted application")
+        response.status_code = 200
+
+    except ValueError as ve:
+        current_app.logger.error(f"Validation error: {ve}")
+        response = make_response(f"Validation error: {str(ve)}")
+        response.status_code = 400
+
+    except Exception as e:
+        current_app.logger.error(f"Error occurred while submitting application: {e}")
+        db.get_db().rollback()  # Roll back the transaction in case of error
+        response = make_response(f"Failed to submit application: {str(e)}")
+        response.status_code = 500
+
+    return response
