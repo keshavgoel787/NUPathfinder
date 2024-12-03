@@ -4,6 +4,7 @@ import logging
 from modules.nav import SideBarLinks
 import streamlit.components.v1 as components
 import math
+from datetime import date
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,6 +52,24 @@ if st.button('Search', type='primary', use_container_width=True):
                     if st.button(f"View Details: {job['position']}", key=f"search_{job['jobID']}"):
                         st.session_state['selected_job_id'] = job['jobID']
                         st.switch_page('pages/Job_Descrip.py')
+                    # Add a button for submitting an application
+                st.write("### Submit Your Application")
+                if st.button("Submit Application", key=f"submit_application_{job['jobID']}"):
+                    student_id = st.session_state.get('student_id', 1)  # Replace with actual student ID logic
+                    application_data = {
+                        "jobID": job['jobID'],
+                        "status": "Submitted",
+                        "dateOfApplication": date.today().isoformat()  # Replace with current date logic
+                    }
+                    try:
+                        response = requests.post(f"{url}/application/{student_id}", json=application_data)
+                        if response.status_code == 200:
+                            st.success("Application submitted successfully.")
+                        else:
+                            st.error(f"Failed to submit application. Server responded with: {response.text}")
+                    except requests.RequestException as err:
+                        logger.error(f"Error: {err}")
+                        st.error("Failed to submit application. Please try again later.")
                     st.write("---")
             else:
                 st.write("No job listings found for the given search query.")
@@ -77,7 +96,26 @@ try:
             if st.button(f"View Details: {job['position']}", key=job['jobID']):
                 st.session_state['selected_job_id'] = job['jobID']
                 st.switch_page('pages/Job_Descrip.py')
+
+                # Add a button for submitting an application
+            if st.button("Submit Application", key=f"submit_application_{job['jobID']}"):
+                student_id = st.session_state.get('student_id', 1)  # Replace with actual student ID logic
+                application_data = {
+                    "jobID": job['jobID'],
+                    "status": "Submitted",
+                    "dateOfApplication": date.today().isoformat()  # Replace with current date logic
+                }
+                try:
+                    response = requests.post(f"{url}/application/{student_id}", json=application_data)
+                    if response.status_code == 200:
+                        st.success("Application submitted successfully.")
+                    else:
+                        st.error(f"Failed to submit application. Server responded with: {response.text}")
+                except requests.RequestException as err:
+                    logger.error(f"Error: {err}")
+                    st.error("Failed to submit application. Please try again later.")
             st.write("---")
+
     else:
         st.write("No job listings available at the moment.")
 except requests.RequestException as err:
