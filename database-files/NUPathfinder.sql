@@ -251,13 +251,11 @@ CREATE TABLE IF NOT EXISTS UserFeedback (
     FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
-DROP TABLE IF EXISTS SkillsGap;
-CREATE TABLE IF NOT EXISTS SkillsGap (
-    name VARCHAR(100) NOT NULL,
-    analysisID INT AUTO_INCREMENT NOT NULL,
-    PRIMARY KEY (analysisID, name),
-    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
-);
+CREATE OR REPLACE VIEW SkillGaps AS
+SELECT js.name AS skill_name
+FROM jobsSkills js
+LEFT JOIN studentSkills ss ON js.name = ss.name
+WHERE ss.name IS NULL;
 
 DROP TABLE IF EXISTS SkillsGapAnalysis;
 CREATE TABLE IF NOT EXISTS SkillsGapAnalysis (
@@ -292,6 +290,7 @@ CREATE TABLE IF NOT EXISTS IndustryTrend (
     FOREIGN KEY (trendID) REFERENCES SkillsTrend(trendID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
+
 
 -- Insert Sample Data into Students
 INSERT INTO students (username, firstName, lastName, major)
@@ -381,13 +380,15 @@ VALUES
 INSERT INTO Courses (departmentID, name, description)
 VALUES
 (1, 'Intro to Programming', 'Learn basic programming concepts.'),
-(2, 'Thermodynamics', 'Study of heat and energy transfer.');
+(2, 'Thermodynamics', 'Study of heat and energy transfer.'),
+(1, 'Fundamentals of Computer Science 2', 'More advanced programming in Java');
 
 -- Insert Sample Data into Course Skills
 INSERT INTO CourseSkills (courseID, name)
 VALUES
 (1, 'Python'),
-(2, 'Prototyping');
+(2, 'Prototyping'),
+(3, 'Java');
 
 -- Insert Sample Data into Notes
 INSERT INTO Notes (userID, content)
@@ -446,3 +447,4 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
+
