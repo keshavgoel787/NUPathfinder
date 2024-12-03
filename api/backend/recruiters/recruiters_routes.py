@@ -47,7 +47,7 @@ def get_listings(rec_Id):
 @recruiters.route('/applicants/<Job_id>', methods={'GET'})
 def get_Applicants(Job_id):
     query = f'''
-        select s.firstName, s.lastName, s.major, application.matchPercent,
+        select s. studentId, s.firstName, s.lastName, s.major, application.matchPercent,
         application.status, application.dateOfApplication from application
             JOIN students s on application.studentID = s.studentID
     where jobID = {str(Job_id)}
