@@ -60,15 +60,13 @@ with col2:
     skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 
     st.subheader('Skill Gaps to Address')
-    st.write(skill_gaps)
-
-    courses = requests.get('http://api:4000/d/recommendcourse').json()
-    st.subheader('Suggested Courses:')
-    if len(courses)<1:
-        st.write("No Recommended Courses")
+    if len(skill_gaps)<1:
+        st.write("No Skill Gaps to Address")
     else:
-        for i in courses:
+        for i in skill_gaps:
             st.write(i['name'])
+
+    st.subheader('Suggested Courses:')
 
 st.write("Search Jobs")
 st.write("Search Courses")
