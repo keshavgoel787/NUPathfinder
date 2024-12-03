@@ -20,55 +20,49 @@ col1, col2 = st.columns(2)
 department_id = st.session_state.get('department_ID', 1)
 
 with col1:
-    student_skills = requests.get('http://api:4000/d/totalstudent').json()
-    skillname = []
-    total = []
-    st.subheader('Total Student Skill Count')
-    for i in student_skills:
-        skillname.append(i['name'])
-        total.append(i['total'])
+    student_data = requests.get('http://api:4000/d/totalstudent').json()
+    df_s = pd.DataFrame(student_data)
+    df_s.rename(columns= {'name': 'Skills', 'total': '# of Students with Skill'}, inplace = True)
+    st.subheader('Student Skill Count')
+    st.bar_chart(df_s, x='Skills', y='# of Students with Skill')
 
-    df1 = pd.DataFrame(
-        {
-            'Skills': skillname,
-            'Skill Total': total
-        }
-    )
 
-    st.bar_chart(df1, x = 'Skills', y='Skill Total')
-
-    st.subheader('Total Job Skill Count')
-    job_skills = requests.get('http://api:4000/d/totaljob').json()
-    skillname = []
-    total = []
-    for i in job_skills:
-        skillname.append(i['name'])
-        total.append(i['total'])
-
-    df2 = pd.DataFrame(
-        {
-            'Skills': skillname,
-            'Skill Total': total
-        }
-    )
-
-    st.bar_chart(df2, x = 'Skills', y='Skill Total')
+    job_data = requests.get('http://api:4000/d/totaljob').json()
+    df_j = pd.DataFrame(job_data)
+    df_j.rename(columns= {'name': 'Skills', 'total': '# of Jobs that Request Skill'}, inplace = True)
+    st.subheader('Job Skill Count')
+    st.bar_chart(df_j, x='Skills', y='# of Jobs that Request Skill')
 
 
 with col2:
-
+    # Fetch data from the API
     skill_gaps = requests.get('http://api:4000/d/Gaps').json()
-    courses = requests.get('http://api:4000/d/recommendcourse').json()
+    courses = requests.get('http://api:4000/d/course/recommend').json()
 
+    # Extract skills and courses in one go
+    skills = {i['skill_name'] for i in skill_gaps}  # Use a set for faster lookups
+    course_skills = {i['skill_name']: i['name'] for i in courses}  # Map skill_name to course name
+
+    # Display skill gaps
     st.subheader('Skill Gaps to Address')
-    skills =[]
-    for i in skill_gaps:
-        st.write(i['skill_name'])
+    for skill in skills:
+        st.write(skill)
 
-    st.subheader('Suggested Courses:')
+    # Display recommended courses
+    st.subheader('Courses to Recommend Students:')
+    for skill, course in course_skills.items():
+        st.write(f"Course: {course} | Skill: {skill}")
 
-    for i in courses:
-        st.write(f"Course: {i['name']} | Skill: {i['skill_name']}")
+    # Identify and display skills not covered by recommended courses
+    st.subheader('Recommended Course Topics')
+    uncovered_skills = skills - course_skills.keys()  # Set difference
+    if len(uncovered_skills)<1:
+        st.write('All Skills Accounted For!')
+    else:
+        for skill in uncovered_skills:
+            st.write(skill)
+    
+
     
 st.write("Search Jobs")
 st.write("Search Courses")

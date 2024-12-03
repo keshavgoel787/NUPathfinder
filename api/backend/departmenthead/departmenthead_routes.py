@@ -119,12 +119,26 @@ def delete_note(department_ID, noteID):
     return response
 
 
-@departmenthead.route('/recommendcourse', methods=['GET'])
-def get_courses():
+@departmenthead.route('/course/recommend', methods=['GET'])
+def recommend_courses():
     query = '''
         SELECT Courses.name, SkillGaps.skill_name
         FROM SkillGaps JOIN CourseSkills ON SkillGaps.skill_name = CourseSkills.name 
         JOIN Courses ON CourseSkills.courseID = Courses.courseID
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+@departmenthead.route('/course', methods = ['GET'])
+def get_course():
+    query = '''
+        SELECT * 
+        FROM Courses
     '''
     cursor = db.get_db().cursor()
     cursor.execute(query)
