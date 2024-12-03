@@ -58,7 +58,7 @@ with col1:
 with col2:
 
     skill_gaps = requests.get('http://api:4000/d/Gaps').json()
-    courses = requests.get('http://api:4000/d/recommendcourse').json()
+    courses = requests.get('http://api:4000/d/course/recommend').json()
 
     st.subheader('Skill Gaps to Address')
     skills =[]
