@@ -251,26 +251,6 @@ CREATE TABLE IF NOT EXISTS UserFeedback (
     FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
-DROP TABLE IF EXISTS SkillsGap;
-CREATE TABLE IF NOT EXISTS SkillsGap (
-    name VARCHAR(100) NOT NULL,
-    analysisID INT AUTO_INCREMENT NOT NULL,
-    PRIMARY KEY (analysisID, name),
-    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-DROP TABLE IF EXISTS SkillsGapAnalysis;
-CREATE TABLE IF NOT EXISTS SkillsGapAnalysis (
-    name VARCHAR(100) NOT NULL, -- Include name to form the composite key
-    analysisID INT NOT NULL,
-    userID INT NOT NULL,
-    gapMagnitude INT,
-    dateObserved DATE,
-    PRIMARY KEY (userID, analysisID), -- Composite primary key
-    FOREIGN KEY (analysisID, name) REFERENCES SkillsGap(analysisID, name),
-    FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
-);
-
 -- SkillsTrend Table
 DROP TABLE IF EXISTS SkillsTrend;
 CREATE TABLE IF NOT EXISTS SkillsTrend (
@@ -292,6 +272,13 @@ CREATE TABLE IF NOT EXISTS IndustryTrend (
     FOREIGN KEY (trendID) REFERENCES SkillsTrend(trendID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
+
+CREATE OR REPLACE VIEW SkillGaps AS
+SELECT js.name AS skill_name
+FROM jobsSkills js
+LEFT JOIN studentSkills ss ON js.name = ss.name
+WHERE ss.name IS NULL;
+
 
 -- Insert Sample Data into Students
 INSERT INTO students (username, firstName, lastName, major)

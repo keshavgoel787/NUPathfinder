@@ -60,11 +60,8 @@ with col2:
     skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 
     st.subheader('Skill Gaps to Address')
-    if len(skill_gaps)<1:
-        st.write("No Skill Gaps to Address")
-    else:
-        for i in skill_gaps:
-            st.write(i['name'])
+    for i in skill_gaps:
+        st.write(i['skill_name'])
 
     st.subheader('Suggested Courses:')
 

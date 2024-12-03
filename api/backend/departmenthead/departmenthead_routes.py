@@ -16,38 +16,16 @@ departmenthead = Blueprint('departmenthead', __name__)
 
 #Get all the listings for a recruiter
 @departmenthead.route('/Gaps', methods=['GET'])
-def get_listings():
-    query = f'''
-        INSERT INTO SkillsGap (name)
-        SELECT js.name
-        FROM jobsSkills js
-        LEFT JOIN studentSkills ss
-        ON js.name = ss.name
-        WHERE ss.name IS NULL
-        AND NOT EXISTS (
-            SELECT 1
-            FROM SkillsGap sg
-            WHERE sg.name = js.name)
-    '''
-    
+def get_skill_gaps():
+    query = "SELECT * FROM SkillGaps"
     cursor = db.get_db().cursor()
-
     cursor.execute(query)
-
-    query = f'''
-        SELECT * 
-        FROM SkillsGap
-    '''
-
-    cursor = db.get_db().cursor()
-
-    cursor.execute(query)
-
-    theData = cursor.fetchall() 
+    theData = cursor.fetchall()
 
     response = make_response(jsonify(theData))
     response.status_code = 200
     return response
+
 
 @departmenthead.route('/totalstudent', methods = ['GET'])
 def get_total_student():
