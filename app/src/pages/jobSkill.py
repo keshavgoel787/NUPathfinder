@@ -69,4 +69,14 @@ with st.form("Add_match_form"):
                     st.error(f"Error adding skill: {response.text}")
             except requests.exceptions.RequestException as e:
                     st.error(f"Error connecting to server: {str(e)}")
+
+
+st.write("")
+st.write("")
+
+if st.button("Or create a new skill", 
+    type = 'primary', 
+    use_container_width=True):
+    st.switch_page('pages/addSkill.py')
+        
                     
