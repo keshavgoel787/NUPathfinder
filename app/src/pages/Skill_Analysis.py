@@ -61,14 +61,19 @@ with col2:
     courses = requests.get('http://api:4000/d/course/recommend').json()
 
     st.subheader('Skill Gaps to Address')
-    skills =[]
-    for i in skill_gaps:
-        st.write(i['skill_name'])
+    skills =[i['skill_name'] for i in skill_gaps]
+    for i in skills:
+        st.write(i)
 
-    st.subheader('Suggested Courses:')
+    st.subheader('Courses to Recommend Students:')
 
-    for i in courses:
-        st.write(f"Course: {i['name']} | Skill: {i['skill_name']}")
+    course_list = [[i['name'], i['skill_name']] for i in courses]
+
+    for i in course_list:
+        st.write(f"Course: {i[0]} | Skill: {i[1]}")
+    
+
+    st.subheader('Recommended Courses to Create')
     
 st.write("Search Jobs")
 st.write("Search Courses")
