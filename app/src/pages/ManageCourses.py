@@ -51,7 +51,5 @@ for _, row in df.iterrows():
         st.write(f"Associated Skill: {row['Associated Skills']}")
 
 if st.button("Add New Course!"):
-    st.switch_page('pages/AddListings.py')
-
-
+    st.switch_page('pages/AddCourse.py')
 
