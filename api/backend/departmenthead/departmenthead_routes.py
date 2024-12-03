@@ -117,3 +117,19 @@ def delete_note(department_ID, noteID):
     response = make_response("Succesfully Deleted Note")
     response.status_code = 200
     return response
+
+
+@departmenthead.route('/recommendcourse', methods=['GET'])
+def get_courses():
+    query = '''
+        SELECT Courses.name, SkillGaps.skill_name
+        FROM SkillGaps JOIN CourseSkills ON SkillGaps.skill_name = CourseSkills.name 
+        JOIN Courses ON CourseSkills.courseID = Courses.courseID
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response

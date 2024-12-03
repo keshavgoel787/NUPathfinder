@@ -368,13 +368,15 @@ VALUES
 INSERT INTO Courses (departmentID, name, description)
 VALUES
 (1, 'Intro to Programming', 'Learn basic programming concepts.'),
-(2, 'Thermodynamics', 'Study of heat and energy transfer.');
+(2, 'Thermodynamics', 'Study of heat and energy transfer.'),
+(1, 'Fundies 2', 'Learn Java');
 
 -- Insert Sample Data into Course Skills
 INSERT INTO CourseSkills (courseID, name)
 VALUES
 (1, 'Python'),
-(2, 'Prototyping');
+(2, 'Prototyping'),
+(3, 'Java');
 
 -- Insert Sample Data into Notes
 INSERT INTO Notes (userID, content)
