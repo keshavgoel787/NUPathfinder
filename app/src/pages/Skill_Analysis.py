@@ -15,47 +15,58 @@ SideBarLinks()
 st.title("Skill Analysis")
 st.write("\n\n")
 
+col1, col2 = st.columns(2)
+
 department_id = st.session_state.get('department_ID', 1)
 
-student_skills = requests.get('http://api:4000/d/totalstudent').json()
-skillname = []
-total = []
-st.subheader('Total Student Skill Count')
-for i in student_skills:
-    skillname.append(i['name'])
-    total.append(i['total'])
+with col1:
+    student_skills = requests.get('http://api:4000/d/totalstudent').json()
+    skillname = []
+    total = []
+    st.subheader('Total Student Skill Count')
+    for i in student_skills:
+        skillname.append(i['name'])
+        total.append(i['total'])
 
-df1 = pd.DataFrame(
-    {
-        'Skills': skillname,
-        'Skill Total': total
-    }
-)
+    df1 = pd.DataFrame(
+        {
+            'Skills': skillname,
+            'Skill Total': total
+        }
+    )
 
-st.bar_chart(df1, x = 'Skills', y='Skill Total')
+    st.bar_chart(df1, x = 'Skills', y='Skill Total')
 
-st.subheader('Total Job Skill Count')
-job_skills = requests.get('http://api:4000/d/totaljob').json()
-skillname = []
-total = []
-for i in job_skills:
-    skillname.append(i['name'])
-    total.append(i['total'])
+    st.subheader('Total Job Skill Count')
+    job_skills = requests.get('http://api:4000/d/totaljob').json()
+    skillname = []
+    total = []
+    for i in job_skills:
+        skillname.append(i['name'])
+        total.append(i['total'])
 
-df2 = pd.DataFrame(
-    {
-        'Skills': skillname,
-        'Skill Total': total
-    }
-)
+    df2 = pd.DataFrame(
+        {
+            'Skills': skillname,
+            'Skill Total': total
+        }
+    )
 
-st.bar_chart(df2, x = 'Skills', y='Skill Total')
+    st.bar_chart(df2, x = 'Skills', y='Skill Total')
 
-skill_gaps = requests.get('http://api:4000/d/Gaps').json()
 
-st.subheader('Skill Gaps to Address')
-if len(skill_gaps)<1:
-    st.write("No Skill Gaps to Address")
-else:
-    for i in skill_gaps:
-        st.write(i['name'])
+with col2:
+
+    skill_gaps = requests.get('http://api:4000/d/Gaps').json()
+
+    st.subheader('Skill Gaps to Address')
+    if len(skill_gaps)<1:
+        st.write("No Skill Gaps to Address")
+    else:
+        for i in skill_gaps:
+            st.write(i['name'])
+
+    st.subheader('Suggested Courses:')
+
+st.write("Search Jobs")
+st.write("Search Courses")
