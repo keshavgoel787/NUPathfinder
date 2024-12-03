@@ -40,6 +40,7 @@ note_content = st.text_input("Add Note")
 if st.button('Add Note', type='primary', use_container_width=True):
     if note_content:
         note_put = requests.post(f"http://api:4000/d/Note/{department_id}",json={"content": note_content})
+        st.success("Successfully added note.")
 
 
 with st.form("delete_note_form"):

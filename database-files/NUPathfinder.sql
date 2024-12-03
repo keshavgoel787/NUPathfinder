@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS studentSkills (
     proficiency int NOT NULL,
     PRIMARY KEY (studentID, name),
     FOREIGN KEY (studentID) REFERENCES students(studentID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Job Skills Table
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS jobsSkills (
     proficiency INT NOT NULL,
     PRIMARY KEY (jobID, name),
     FOREIGN KEY (jobID) REFERENCES jobs(jobID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Applications Table
@@ -164,16 +164,15 @@ CREATE TABLE IF NOT EXISTS application (
 -- Experiences Table
 DROP TABLE IF EXISTS experiences;
 CREATE TABLE IF NOT EXISTS experiences (
-    experienceID INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     Username INT NOT NULL,
     review TEXT,
     rating INT CHECK (rating >= 1 AND rating <= 5),
     jobID INT NOT NULL,
+    PRIMARY KEY (jobID, Username),
     FOREIGN KEY (Username) REFERENCES students(studentID),
     FOREIGN KEY (jobID) REFERENCES jobs(jobID)
 );
-
 
 -- BlackListed Table
 DROP TABLE IF EXISTS BlackListed;
@@ -222,7 +221,7 @@ CREATE TABLE IF NOT EXISTS CourseSkills (
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (courseID, name),
     FOREIGN KEY (courseID) REFERENCES Courses(courseID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Notes Table
@@ -251,26 +250,6 @@ CREATE TABLE IF NOT EXISTS UserFeedback (
     FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
-DROP TABLE IF EXISTS SkillsGap;
-CREATE TABLE IF NOT EXISTS SkillsGap (
-    name VARCHAR(100) NOT NULL,
-    analysisID INT AUTO_INCREMENT NOT NULL,
-    PRIMARY KEY (analysisID, name),
-    FOREIGN KEY (name) REFERENCES skills(name)
-);
-
-DROP TABLE IF EXISTS SkillsGapAnalysis;
-CREATE TABLE IF NOT EXISTS SkillsGapAnalysis (
-    name VARCHAR(100) NOT NULL, -- Include name to form the composite key
-    analysisID INT NOT NULL,
-    userID INT NOT NULL,
-    gapMagnitude INT,
-    dateObserved DATE,
-    PRIMARY KEY (userID, analysisID), -- Composite primary key
-    FOREIGN KEY (analysisID, name) REFERENCES SkillsGap(analysisID, name),
-    FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
-);
-
 -- SkillsTrend Table
 DROP TABLE IF EXISTS SkillsTrend;
 CREATE TABLE IF NOT EXISTS SkillsTrend (
@@ -278,7 +257,7 @@ CREATE TABLE IF NOT EXISTS SkillsTrend (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     PRIMARY KEY (trendID),
-    FOREIGN KEY (name) REFERENCES skills(name)
+    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- IndustryTrend Table
@@ -292,6 +271,13 @@ CREATE TABLE IF NOT EXISTS IndustryTrend (
     FOREIGN KEY (trendID) REFERENCES SkillsTrend(trendID),
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
+
+CREATE OR REPLACE VIEW SkillGaps AS
+SELECT js.name AS skill_name
+FROM jobsSkills js
+LEFT JOIN studentSkills ss ON js.name = ss.name
+WHERE ss.name IS NULL;
+
 
 -- Insert Sample Data into Students
 INSERT INTO students (username, firstName, lastName, major)
@@ -381,13 +367,15 @@ VALUES
 INSERT INTO Courses (departmentID, name, description)
 VALUES
 (1, 'Intro to Programming', 'Learn basic programming concepts.'),
-(2, 'Thermodynamics', 'Study of heat and energy transfer.');
+(2, 'Thermodynamics', 'Study of heat and energy transfer.'),
+(1, 'Fundies 2', 'Learn Java');
 
 -- Insert Sample Data into Course Skills
 INSERT INTO CourseSkills (courseID, name)
 VALUES
 (1, 'Python'),
-(2, 'Prototyping');
+(2, 'Prototyping'),
+(3, 'Java');
 
 -- Insert Sample Data into Notes
 INSERT INTO Notes (userID, content)
@@ -395,16 +383,6 @@ VALUES
 (1, 'Review curriculum for upcoming semester.'),
 (2, 'Discuss research opportunities with faculty.');
 
-
-INSERT INTO SkillsGap (name)
-SELECT js.name FROM
-        jobsSkills js
-    LEFT JOIN
-        studentSkills ss
-    ON
-        js.name = ss.name
-    WHERE
-        ss.name IS NULL;
 
 -- Insert Sample Data into SkillsTrend
 INSERT INTO SkillsTrend (name, description)
@@ -456,7 +434,3 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
-
-INSERT INTO skills (name, description, category)
-VALUES
-('MATLAB', 'Engineering', 'Applications');
