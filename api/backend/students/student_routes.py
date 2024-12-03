@@ -26,10 +26,12 @@ students = Blueprint('students', __name__)
 @students.route('/jobs', methods=['GET'])
 def get_listings():
     query = '''
-        SELECT j.jobID, j.position, j.description, c.name
+        SELECT j.jobID, j.position, j.description, c.name, AVG(e.rating) AS average_rating
         FROM jobs j
         JOIN Recruiters r ON j.recID = r.recID
         JOIN Companies c ON r.companyID = c.companyID
+        LEFT JOIN experiences e ON j.jobID = e.jobID
+        GROUP BY j.jobID
     '''
     cursor = db.get_db().cursor()
     cursor.execute(query)
@@ -153,33 +155,35 @@ def get_reviews(jobID):
     return response
 
 
-# Add a new review for a job listing
-@students.route('/reviews/<jobID>', methods=['POST'])
-def add_review(jobID):
+@students.route('/reviews/<Username>/<jobID>', methods=['POST'])
+def add_review(Username, jobID):
     the_data = request.json
     current_app.logger.info(f"Received review data: {the_data}")
 
     try:
         # Extracting the variables
         title = the_data['title']
-        username = the_data['username']
         review = the_data['review']
         rating = the_data['rating']
+        cursor = db.get_db().cursor()
 
+        # Insert a new review
         query = '''
-            INSERT INTO experiences (title, username, review, rating, jobID)
+            INSERT INTO experiences (title, Username, review, rating, jobID)
             VALUES (%s, %s, %s, %s, %s)
         '''
-        current_app.logger.info(f"Executing query: {query} with values ({title}, {username}, {review}, {rating}, {jobID})")
-        cursor = db.get_db().cursor()
-        cursor.execute(query, (title, username, review, rating, jobID))
-        db.get_db().commit()
+        cursor.execute(query, (title, Username, review, rating, jobID))
+        current_app.logger.info(f"Inserted new review for student_id={Username}, jobID={jobID}")
 
-        response = make_response("Successfully added review")
+        db.get_db().commit()
+        response = make_response("Successfully added/updated review")
         response.status_code = 200
+
     except Exception as e:
-        current_app.logger.error(f"Error occurred while adding review: {e}")
-        response = make_response("Failed to add review")
+        current_app.logger.error(f"Error occurred while adding/updating review: {e}")
+        db.get_db().rollback()  # Roll back the transaction in case of error
+        response = make_response(f"Failed to add/update review: {str(e)}")
         response.status_code = 500
 
     return response
+

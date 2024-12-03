@@ -3,6 +3,7 @@ import requests
 import logging
 from modules.nav import SideBarLinks
 import streamlit.components.v1 as components
+import math
 
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,6 +21,17 @@ url = 'http://api:4000/s'
 st.write("### Search for Job Listings")
 search_query = st.text_input("Enter a field or keyword to search for job listings")
 
+def display_stars(rating):
+    """
+    Function to display stars for the rating.
+    """
+    full_stars = math.floor(float(rating))
+    half_star = float(rating) - full_stars >= 0.5
+    stars = "★" * full_stars
+    if half_star:
+        stars += "⯯"  # Use a half star symbol if desired
+    return stars
+
 if st.button('Search', type='primary', use_container_width=True):
     if search_query:
         try:
@@ -34,6 +46,8 @@ if st.button('Search', type='primary', use_container_width=True):
                     st.write(f"Job Title: {job['position']}")
                     st.write(f"Company: {job['name']}")
                     st.write(f"Description: {job['description']}")
+                    if 'average_rating' in job and job['average_rating'] is not None:
+                        st.write(f"Average Rating: {display_stars(job['average_rating'])}")
                     if st.button(f"View Details: {job['position']}", key=f"search_{job['jobID']}"):
                         st.session_state['selected_job_id'] = job['jobID']
                         st.switch_page('pages/Job_Descrip.py')
@@ -58,6 +72,8 @@ try:
             st.write(f"Job Title: {job['position']}")
             st.write(f"Company: {job['name']}")
             st.write(f"Description: {job['description']}")
+            if 'average_rating' in job and job['average_rating'] is not None:
+                st.write(f"Average Rating: {display_stars(job['average_rating'])}")
             if st.button(f"View Details: {job['position']}", key=job['jobID']):
                 st.session_state['selected_job_id'] = job['jobID']
                 st.switch_page('pages/Job_Descrip.py')
