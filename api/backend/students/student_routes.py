@@ -190,7 +190,7 @@ def add_review(Username, jobID):
 
 #
 # Add a new application for a student
-@students.route('/application/<int:studentID>', methods=['POST'])
+@students.route('/application/<studentID>', methods=['POST'])
 def submit_application(studentID):
     the_data = request.json
     current_app.logger.info(f"Received application data: {the_data}")
