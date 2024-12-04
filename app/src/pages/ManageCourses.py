@@ -64,8 +64,10 @@ for index, row in df.iterrows():
         # Update skill button (currently does nothing)
         with col2:
             if st.button("Update Skill", key=f"edit{row['Course Num']}"):
-                pass
+                st.session_state['Current Course #'] = row['Course Num']
+                st.session_state['Current Course'] = row['Course Name']
+                st.switch_page("pages/CourseSkill.py")
 
 # Button to add a new course
-if st.button("Add New Course!"):
+if st.button("Add New Course"):
     st.switch_page("pages/AddCourse.py")

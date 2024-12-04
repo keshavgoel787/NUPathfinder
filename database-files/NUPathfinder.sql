@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS Courses (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     PRIMARY KEY (courseID),
-    FOREIGN KEY (departmentID) REFERENCES Department(departmentID)
+    FOREIGN KEY (departmentID) REFERENCES Department(departmentID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Course Skills Table
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS CourseSkills (
     courseID INT NOT NULL,
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (courseID, name),
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID),
+    FOREIGN KEY (courseID) REFERENCES Courses(courseID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
