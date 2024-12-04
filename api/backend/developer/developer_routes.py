@@ -89,6 +89,20 @@ def update_documentation(doc_id):
     response.status_code = 200
     return response
 
+# Route 5: Archive outdated user interaction data
+@developer.route('/interaction_data', methods=['DELETE'])
+def archive_interaction_data():
+    query = '''
+        DELETE FROM interactionData
+        WHERE timestamp < NOW() - INTERVAL 1 YEAR
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+
+    response = make_response("Successfully archived outdated interaction data")
+    response.status_code = 200
+    return response
 
 
 
