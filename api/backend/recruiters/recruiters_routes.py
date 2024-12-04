@@ -282,6 +282,8 @@ def blacklist_Student():
 
 @recruiters.route("/removeApp/<JobId>/<StudentId>", methods = ['DELETE'])
 def remove_Applicant(JobId, StudentId):
+
+    current_app.logger.info(f"Attempting to delete with jobId={JobId} and StudentId={StudentId}")
     try:
         query = "DELETE FROM application WHERE jobId = %s and studentId = %s"
     
@@ -290,14 +292,14 @@ def remove_Applicant(JobId, StudentId):
         cursor = conn.cursor()
 
         # Execute the query
-        cursor.execute(query, (jobId, StudentId))
+        cursor.execute(query, (JobId, StudentId))
 
         # Commit changes
         conn.commit()
 
         response.status_code = 200
         return response
-    except:
+    except Exception as e:
         conn.rollback()
-        current_app.logger.error(f"Error deleting student ID {jobId}: {e}")
+        current_app.logger.error(f"Error deleting student ID {JobId}: {e}")
         return jsonify({"error": str(e)}), 500
