@@ -59,6 +59,11 @@ sort_by = st.sidebar.selectbox(
     index=0,
 )
 
+if st.sidebar.button("Logout"):
+            del st.session_state["role"]
+            del st.session_state["authenticated"]
+            st.switch_page("Home.py")
+
 # Filter and sort data
 filtered_df = df[df["Application Status"].isin(status_filter)]
 sorted_df = filtered_df.sort_values(by=sort_by, ascending=(sort_by != "Match Percent"))
