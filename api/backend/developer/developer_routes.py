@@ -13,7 +13,7 @@ from backend.db_connection import db
 # routes.
 developer = Blueprint('developer', __name__)
 
-# Route 1: Monitor inconsistencies in data
+# Monitor inconsistencies in data
 @developer.route('/data_logs', methods=['GET'])
 def get_data_logs():
     query = f'''
@@ -28,7 +28,35 @@ def get_data_logs():
     response.status_code = 200
     return response
 
-# Route 2: View user feedback
+# Fix data log inconsistencies
+@developer.route('/data_logs/<log_id>', methods=['PUT'])
+def update_data_log(log_id):
+    try:
+        the_data = request.json
+        details = the_data.get('details')
+        timestamp = the_data.get('timestamp')
+
+        query = f'''
+            UPDATE DataLogs
+            SET details = %s, timestamp = %s
+            WHERE logID = %s
+        '''
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (details, timestamp, log_id))
+        db.get_db().commit()
+        current_app.logger.info(f"Updated data log {log_id}")
+        response = make_response("Successfully updated data log")
+        response.status_code = 200
+        return response
+    except Exception as e:
+        current_app.logger.error(f"Error updating data log: {str(e)}")
+        response = make_response(jsonify({"Error": "Failure to update data log"}))
+        response.status_code = 500
+        return response
+
+    
+
+# View user feedback
 @developer.route('/user_feedback', methods =['GET'])
 def get_user_feedback():
     query = f'''
@@ -43,7 +71,7 @@ def get_user_feedback():
     response.status_code = 200
     return response
 
-# Route 3: Automated test results
+# Automated test results
 @developer.route('/test_results', methods=['POST'])
 def log_test_results():
     the_data = request.json
@@ -66,7 +94,7 @@ def log_test_results():
     response.status_code = 200
     return response
 
-# Route 4: Update Documentation
+# Update Documentation
 @developer.route('/documentation/<doc_id>', methods=['PUT'])
 def update_documentation(doc_id):
     the_data = request.json
@@ -89,7 +117,7 @@ def update_documentation(doc_id):
     response.status_code = 200
     return response
 
-# Route 5: Archive outdated user interaction data
+# Archive outdated user interaction data
 @developer.route('/interaction_data', methods=['DELETE'])
 def archive_interaction_data():
     query = '''
