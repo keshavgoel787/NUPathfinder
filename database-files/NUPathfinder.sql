@@ -155,6 +155,7 @@ CREATE TABLE IF NOT EXISTS application (
     studentID INT NOT NULL,
     jobID INT NOT NULL,
     dateOfApplication DATE DEFAULT CURRRENT_DATE,
+    matchPercent INT,
     status VARCHAR(50) DEFAULT 'Submitted',
     PRIMARY KEY (applicationID),
     FOREIGN KEY (studentID) REFERENCES students(studentID),

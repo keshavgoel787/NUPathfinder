@@ -134,14 +134,15 @@ def recommend_courses():
     response.status_code = 200
     return response
 
-@departmenthead.route('/course', methods = ['GET'])
-def get_course():
-    query = '''
+@departmenthead.route('/course/<department_ID>', methods = ['GET'])
+def get_course(department_ID):
+    query = f'''
         SELECT * 
-        FROM Courses
+        FROM Courses JOIN CourseSkills ON CourseSkills.courseID = Courses.courseID
+        WHERE Courses.departmentID = {department_ID}
     '''
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query,)
     theData = cursor.fetchall()
 
     response = make_response(jsonify(theData))

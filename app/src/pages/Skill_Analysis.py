@@ -19,18 +19,19 @@ col1, col2 = st.columns(2)
 
 department_id = st.session_state.get('department_ID', 1)
 
-def fetch_and_plot_data(api_url, title):
-    """Fetch data from the API, create a DataFrame, and plot a bar chart."""
-    data = requests.get(api_url).json()
-    df = pd.DataFrame(data)
-    df.rename(columns={'name': 'Skills', 'total': 'Skill Total'}, inplace=True)
-    
-    st.subheader(title)
-    st.bar_chart(df, x='Skills', y='Skill Total')
-
 with col1:
-    fetch_and_plot_data('http://api:4000/d/totalstudent', 'Total Student Skill Count')
-    fetch_and_plot_data('http://api:4000/d/totaljob', 'Total Job Skill Count')
+    student_data = requests.get('http://api:4000/d/totalstudent').json()
+    df_s = pd.DataFrame(student_data)
+    df_s.rename(columns= {'name': 'Skills', 'total': '# of Students with Skill'}, inplace = True)
+    st.subheader('Student Skill Count')
+    st.bar_chart(df_s, x='Skills', y='# of Students with Skill')
+
+
+    job_data = requests.get('http://api:4000/d/totaljob').json()
+    df_j = pd.DataFrame(job_data)
+    df_j.rename(columns= {'name': 'Skills', 'total': '# of Jobs that Request Skill'}, inplace = True)
+    st.subheader('Job Skill Count')
+    st.bar_chart(df_j, x='Skills', y='# of Jobs that Request Skill')
 
 
 with col2:
@@ -55,9 +56,19 @@ with col2:
     # Identify and display skills not covered by recommended courses
     st.subheader('Recommended Course Topics')
     uncovered_skills = skills - course_skills.keys()  # Set difference
-    for skill in uncovered_skills:
-        st.write(skill)
-
+    if len(uncovered_skills)<1:
+        st.write('All Skills Accounted For!')
+    else:
+        for skill in uncovered_skills:
+            st.write(skill)
     
-st.write("Search Jobs")
-st.write("Search Courses")
+    
+if st.button('View All Inputted Skills',   
+             type='primary',
+             use_container_width=True):
+    st.switch_page('pages/ManageSkills.py')
+
+if st.button('Manage Current Courses',   
+             type='primary',
+             use_container_width=True):
+    st.switch_page('pages/ManageCourses.py')
