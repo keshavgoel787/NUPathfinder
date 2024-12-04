@@ -52,9 +52,11 @@ for _, row in df.iterrows():
 
         with col1:
             if st.button("Delete Course", key = f"delete{row['Course Num']}"):
-                pass
+                response = requests.delete(f"http://api:4000/d/deletecourse/{department_id}/{row['Course Num']}")
+                response.raise_for_status()
+                st.success("Successfully deleted Course.")
+                st.rerun()
         
-
         with col2:
             if st.button("Update Skill", key = f"edit{row['Course Num']}"):
                 pass

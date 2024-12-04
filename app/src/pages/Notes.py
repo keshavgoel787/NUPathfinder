@@ -41,6 +41,9 @@ if st.button('Add Note', type='primary', use_container_width=True):
     if note_content:
         note_put = requests.post(f"http://api:4000/d/Note/{department_id}",json={"content": note_content})
         st.success("Successfully added note.")
+        st.rerun()
+
+
 
 
 with st.form("delete_note_form"):
@@ -56,7 +59,8 @@ with st.form("delete_note_form"):
                 response = requests.delete(f"http://api:4000/d/Note/{department_id}/{skill_to_delete}")
                 response.raise_for_status()
                 st.success("Successfully deleted note.")
-                st.session_state['reload'] = True
+                st.rerun()
+
             except requests.RequestException as err:
                 logger.error(f"Error: {err}")
                 st.error("Failed to delete note.")

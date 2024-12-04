@@ -173,3 +173,17 @@ def add_course(department_ID):
     response = make_response("Successfully added Course")
     response.status_code = 200
     return response
+
+@departmenthead.route('/deletecourse/<department_ID>/<courseID>', methods = ['DELETE'])
+def delete_course(department_ID, courseID):
+    query = '''
+        DELETE FROM Courses
+        WHERE departmentID = %s AND courseID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (department_ID, courseID))
+    db.get_db().commit()
+
+    response = make_response("Succesfully Deleted Note")
+    response.status_code = 200
+    return response

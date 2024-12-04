@@ -4,8 +4,6 @@ logger = logging.getLogger(__name__)
 import pandas as pd
 import streamlit as st
 import requests
-import array
-import datetime
 from modules.nav import SideBarLinks
 
 st.set_page_config(layout = 'wide')
@@ -42,7 +40,8 @@ with st.form("add_course_form"):
 
             url = f"http://api:4000/d/addcourse/{department_id}"
             response = requests.post(url, json=course_data)
-            st.success("Successfully added note.")
+            st.success("Successfully added Course.")
+            st.switch_page("pages/ManageCourses.py")
 
 
 
