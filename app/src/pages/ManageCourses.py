@@ -12,10 +12,8 @@ logger = logging.getLogger(__name__)
 SideBarLinks()
 
 # Set the page title
-st.title("Skill Analysis")
+st.title("Course List")
 st.write("\n\n")
-
-col1, col2 = st.columns(2)
 
 department_id = st.session_state.get('department_ID', 1)
 
@@ -49,6 +47,17 @@ for _, row in df.iterrows():
     with st.expander(f"{row['Course Name']}"):
         st.write(f"Description: {row['Course Description']}")
         st.write(f"Associated Skill: {row['Associated Skills']}")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if st.button("Delete Course", key = f"delete{row['Course Num']}"):
+                pass
+        
+
+        with col2:
+            if st.button("Update Skill", key = f"edit{row['Course Num']}"):
+                pass
 
 if st.button("Add New Course!"):
     st.switch_page('pages/AddCourse.py')
