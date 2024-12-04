@@ -1,3 +1,9 @@
 # `modules` Folder
 
 Currently, we are using this folder to hold functionality that needs to be accessible to the entire application. `nav.py` is a module that supports our custom navigation bar on the left of the app along with some basic Role-Based Access Control (RBAC). 
+
+We have 5 blueprints, one for each "role" including students, recruiter, department head, and developer with 2 blueprints being used for students. The main student blueprint 'student_routes.py' inclues 8 routes while the second blueprint 'job_routes.py' only has 1.
+
+The home page of the Streamlit UI will give the user 4 buttons/users to choose from.
+
+Selecting the student role in the Streamlit UI home page will make the user a student and give them the option between choosing to go to their profile and look at the job listings. Going to the profile will display the students skills along with the respective proficiency level. In addition it provides spaces for a student to add new skills, and update and delete existing skills. The job listings page of the students section will at first show random job listings from the database with the job title, company, description, and average rating. Users can search for specific keywords in a job listing and the website will return the listings in order of words closest to the words searched. In addition their is a button for the user to quickly submit their application and another one to view more details of the listings which will take them to another page. This other page will have all the information on the job previously listed but also include the start and end date and the required skills and profecieny for each skill. There is also an area with reviews from previous users and an area for the user to leave a review.
