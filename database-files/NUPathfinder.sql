@@ -351,7 +351,7 @@ VALUES
 -- Insert Sample Data into BlackListed
 INSERT INTO BlackListed (recID, studentID)
 VALUES
-(1, 3);
+(2, 3);
 
 -- Insert Sample Data into Department Head
 INSERT INTO DepartmentHead (firstName, lastName)

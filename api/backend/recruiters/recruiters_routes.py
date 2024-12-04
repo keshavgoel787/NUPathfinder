@@ -251,3 +251,53 @@ def remove_Job(jobId):
         return jsonify({"error": str(e)}), 500
 
 
+
+@recruiters.route("/blackList/", methods = ['POST'])
+def blacklist_Student():
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    studentId = the_data['studentId']
+    recId = the_data['recId']
+
+
+    query = '''
+       INSERT INTO BlackListed (recID, studentID)
+        VALUES
+        (%s, %s);
+    '''
+
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (recId, studentId))
+
+    db.get_db().commit()
+    
+    response = make_response("Successfully blacklisted student")
+    response.status_code = 200
+    return response
+
+
+@recruiters.route("/removeApp/<JobId>/<StudentId>", methods = ['DELETE'])
+def remove_Applicant(JobId, StudentId):
+    try:
+        query = "DELETE FROM application WHERE jobId = %s and studentId = %s"
+    
+    # Database connection
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        # Execute the query
+        cursor.execute(query, (jobId, StudentId))
+
+        # Commit changes
+        conn.commit()
+
+        response.status_code = 200
+        return response
+    except:
+        conn.rollback()
+        current_app.logger.error(f"Error deleting student ID {jobId}: {e}")
+        return jsonify({"error": str(e)}), 500

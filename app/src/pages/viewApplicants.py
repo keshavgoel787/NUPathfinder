@@ -89,7 +89,29 @@ for _, row in sorted_df.iterrows():
         st.write("**Skills:**")
         for skill in studentSkills:
             st.write(f"- {skill['name']} || {'⭐' * skill['proficiency']}")
-    if st.button("Blacklist student", key = f"profile-{student_id}"):
-        #add to blacklist db
-        
-        #remove from any app rn
+        if st.button("Blacklist student", key = f"profile-{student_id}"):
+            try:
+                    url = f"http://api:4000/r/blackList"
+                    data = {
+                        'studentId': row['StudentId'],
+                        'recId': st.session_state["rec_id"]
+                    }
+                    response = requests.post(url, json=data)
+                    if response.status_code == 200:
+                        st.success("student added successfully!")
+                    else:
+                        st.error(f"Error adding listing: {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"Error connecting to server: {str(e)}")
+            #remove from any application rn
+
+            url = f"http://api:4000/r/Listings/{st.session_state['rec_id']}"
+
+            listings = requests.get(url).json()
+
+            for i in listings:
+                response2 = requests.delete(f"http://api:4000/r/removeApp/{i['jobId']}/{row['StudentId']}")
+                if response.status_code == 200:
+                    st.success("student added successfully!")
+                else:
+                    st.error(f"Error adding listing: {response.text}")
