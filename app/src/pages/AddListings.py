@@ -4,8 +4,6 @@ logger = logging.getLogger(__name__)
 import pandas as pd
 import streamlit as st
 import requests
-import array
-import datetime
 from modules.nav import SideBarLinks
 
 st.set_page_config(layout = 'wide')

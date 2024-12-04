@@ -138,7 +138,7 @@ def recommend_courses():
 def get_course(department_ID):
     query = f'''
         SELECT * 
-        FROM Courses JOIN CourseSkills ON CourseSkills.courseID = Courses.courseID
+        FROM Courses LEFT JOIN CourseSkills ON CourseSkills.courseID = Courses.courseID
         WHERE Courses.departmentID = {department_ID}
     '''
     cursor = db.get_db().cursor()
@@ -146,5 +146,44 @@ def get_course(department_ID):
     theData = cursor.fetchall()
 
     response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+@departmenthead.route('/addcourse/<department_ID>', methods = ['POST'])
+def add_course(department_ID):
+
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    name = the_data['name']
+    description = the_data['description']
+    
+    query = '''
+        INSERT INTO Courses(departmentID, name, description)
+        VALUES (%s, %s, %s)
+    '''
+
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (department_ID, name, description))
+    db.get_db().commit()
+    
+    response = make_response("Successfully added Course")
+    response.status_code = 200
+    return response
+
+@departmenthead.route('/deletecourse/<department_ID>/<courseID>', methods = ['DELETE'])
+def delete_course(department_ID, courseID):
+    query = '''
+        DELETE FROM Courses
+        WHERE departmentID = %s AND courseID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (department_ID, courseID))
+    db.get_db().commit()
+
+    response = make_response("Succesfully Deleted Note")
     response.status_code = 200
     return response
