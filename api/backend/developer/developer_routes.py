@@ -1,8 +1,6 @@
 ########################################################
 # Developer blueprint of endpoints
 ########################################################
-
-
 from flask import Blueprint
 from flask import request
 from flask import jsonify
@@ -31,7 +29,7 @@ def get_data_logs():
     return response
 
 # Route 2: View user feedback
-@developer.route('/user_feedback', methods =[GET])
+@developer.route('/user_feedback', methods =['GET'])
 def get_user_feedback():
     query = f'''
         SELECT *
@@ -67,6 +65,31 @@ def log_test_results():
     response = make_response("Successfully logged test results")
     response.status_code = 200
     return response
+
+# Route 4: Update Documentation
+@developer.route('/documentation/<doc_id>', methods=['PUT'])
+def update_documentation(doc_id):
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    section = the_data['section']
+    details = the_data['details']
+    last_updated = the_data['lastUpdated']
+
+    query = f'''
+        UPDATE documentation
+        SET section = %s, details = %s, lastUpdated = %s
+        WHERE docID = %s
+    '''
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (section, details, last_updated, doc_id))
+    db.get_db().commit()
+
+    response = make_response("Successfully updated documentation")
+    response.status_code = 200
+    return response
+
+
 
 
 
