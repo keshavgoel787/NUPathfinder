@@ -2,65 +2,70 @@ import streamlit as st
 import requests
 import logging
 import pandas as pd
-
 from modules.nav import SideBarLinks
 
-
+# Set up logging
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Initialize Sidebar
 SideBarLinks()
 
 # Set the page title
 st.title("Course List")
 st.write("\n\n")
 
+# Get department ID (default to 1 if not set)
 department_id = st.session_state.get('department_ID', 1)
 
-course_data = requests.get(f'http://api:4000/d/course/{department_id}').json()
+# Fetch course data
+try:
+    course_data = requests.get(f'http://api:4000/d/course/{department_id}')
+    course_data.raise_for_status()
+    course_data = course_data.json()
+except requests.exceptions.RequestException as e:
+    st.error("Failed to fetch course data.")
+    logger.error(f"Error fetching course data: {e}")
+    st.stop()
 
-courseid = []
-departmentid = []
-description = []
-name = []
-skills = []
+# Transform course data into a DataFrame
+df = pd.DataFrame(course_data)
+if not df.empty:
+    df.rename(columns={
+        'courseID': 'Course Num',
+        'departmentID': 'Department Num',
+        'name': 'Course Name',
+        'description': 'Course Description',
+        'CourseSkills.name': 'Associated Skills'
+    }, inplace=True)
 
-for i in course_data:
-    courseid.append(i['courseID'])
-    departmentid.append(i['departmentID'])
-    description.append(i['description'])
-    name.append(i['name'])
-    skills.append(i['CourseSkills.name'])
-
-data = {
-    'Course Num': courseid,
-    'Department Num': departmentid,
-    'Course Name': name,
-    'Course Description':description,
-    'Associated Skills': skills
-}
-
-df = pd.DataFrame(data)
-
+# Display list of courses
 st.subheader('List of Courses')
-for _, row in df.iterrows():
+for index, row in df.iterrows():
     with st.expander(f"{row['Course Name']}"):
-        st.write(f"Description: {row['Course Description']}")
-        st.write(f"Associated Skill: {row['Associated Skills']}")
+        st.write(f"**Description**: {row['Course Description']}")
+        st.write(f"**Associated Skill**: {row['Associated Skills']}")
 
+        # Action buttons
         col1, col2 = st.columns(2)
 
+        # Delete course button
         with col1:
-            if st.button("Delete Course", key = f"delete{row['Course Num']}"):
-                response = requests.delete(f"http://api:4000/d/deletecourse/{department_id}/{row['Course Num']}")
-                response.raise_for_status()
-                st.success("Successfully deleted Course.")
-                st.rerun()
-        
+            if st.button("Delete Course", key=f"delete{row['Course Num']}"):
+                try:
+                    response = requests.delete(f"http://api:4000/d/deletecourse/{department_id}/{row['Course Num']}")
+                    response.raise_for_status()
+                    st.success(f"Successfully deleted {row['Course Name']}.")
+                    st.rerun()
+                except requests.exceptions.RequestException as e:
+                    st.error("Failed to delete the course.")
+                    logger.error(f"Error deleting course {row['Course Num']}: {e}")
+
+        # Update skill button (currently does nothing)
         with col2:
-            if st.button("Update Skill", key = f"edit{row['Course Num']}"):
+            if st.button("Update Skill", key=f"edit{row['Course Num']}"):
                 pass
 
+# Button to add a new course
 if st.button("Add New Course!"):
-    st.switch_page('pages/AddCourse.py')
-
+    st.switch_page("pages/AddCourse.py")
