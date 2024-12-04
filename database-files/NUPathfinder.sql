@@ -154,12 +154,12 @@ CREATE TABLE IF NOT EXISTS application (
     applicationID INT AUTO_INCREMENT NOT NULL,
     studentID INT NOT NULL,
     jobID INT NOT NULL,
-    dateOfApplication DATE DEFAULT CURRRENT_DATE,
+    dateOfApplication DATE DEFAULT '2024-11-20',
     matchPercent INT,
     status VARCHAR(50) DEFAULT 'Submitted',
     PRIMARY KEY (applicationID),
     FOREIGN KEY (studentID) REFERENCES students(studentID),
-    FOREIGN KEY (jobID) REFERENCES jobs(jobID)
+    FOREIGN KEY (jobID) REFERENCES jobs(jobID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Experiences Table

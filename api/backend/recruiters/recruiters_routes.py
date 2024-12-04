@@ -19,25 +19,6 @@ logger = logging.getLogger(__name__)
 recruiters = Blueprint('recruiters', __name__)
 
 #Get all the listings for a recruiter
-@recruiters.route('/allListings', methods=['GET'])
-def get_All_listings():
-    query = f'''
-        SELECT 
-         * from jobs
-    '''
-    
-    cursor = db.get_db().cursor()
-
-    cursor.execute(query)
-
-    theData = cursor.fetchall() 
-
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-
-#Get all the listings for a recruiter
 @recruiters.route('/Listings/<rec_Id>', methods=['GET'])
 def get_listings(rec_Id):
     query = f'''
@@ -50,7 +31,6 @@ def get_listings(rec_Id):
          from jobs 
          where recID = {str(rec_Id)}
     '''
-    
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
@@ -239,3 +219,33 @@ def addSkill():
     response = make_response("Successfully added skill")
     response.status_code = 200
     return response
+@recruiters.route('/deleteJob/<int:jobId>', methods=['DELETE'])
+def remove_Job(jobId):
+    current_app.logger.info(f"Attempting to delete Job ID: {jobId}")
+    try:
+        # SQL query with parameterized input
+        query = "DELETE FROM jobs WHERE jobId = %s"
+        query2 = "DELETE FROM application WHERE jobId = %s"
+        query3 = "DELETE FROM experiences WHERE jobId = %s"
+        query4 = "DELETE FROM jobsSkills WHERE jobId = %s"
+
+        # Database connection
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        # Execute the query
+        cursor.execute(query2, (jobId))
+        cursor.execute(query3, (jobId))
+        cursor.execute(query4, (jobId))
+        cursor.execute(query, (jobId))
+
+        # Commit changes
+        conn.commit()
+
+        response = make_response("Successfully added skill")
+        response.status_code = 200
+        return response
+    except:
+        conn.rollback()
+        current_app.logger.error(f"Error deleting Job ID {jobId}: {e}")
+        return jsonify({"error": str(e)}), 500
