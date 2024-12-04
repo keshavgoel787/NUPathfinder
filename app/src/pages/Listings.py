@@ -26,8 +26,8 @@ if listings:
     for i in listings:
         st.write(f"Position: {i['position']}")
         st.write(f"Description: {i['description']}")
-        st.write(f"Start date: {i['startDate'][6:17]}")
-        st.write(f"end date: {i['endDate'][6:17]}")
+        st.write(f"Start date: {i['startDate'][5:17]}")
+        st.write(f"End date: {i['endDate'][5:17]}")
         col1, col2, col3 = st.columns(3)
 
         with col1: 

@@ -79,7 +79,7 @@ def updateJob(job_Id):
 @recruiters.route('/applicants/<Job_id>', methods={'GET'})
 def get_Applicants(Job_id):
     query = f'''
-        select s. studentId, s.firstName, s.lastName, s.major, application.matchPercent,
+        select s.studentId, s.firstName, s.lastName, s.major, application.matchPercent,
         application.status, application.dateOfApplication from application
             JOIN students s on application.studentID = s.studentID
     where jobID = {str(Job_id)}
@@ -249,3 +249,5 @@ def remove_Job(jobId):
         conn.rollback()
         current_app.logger.error(f"Error deleting Job ID {jobId}: {e}")
         return jsonify({"error": str(e)}), 500
+
+
