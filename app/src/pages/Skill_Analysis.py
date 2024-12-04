@@ -62,7 +62,13 @@ with col2:
         for skill in uncovered_skills:
             st.write(skill)
     
-
     
-st.write("Search Jobs")
-st.write("Search Courses")
+if st.button('View All Inputted Skills',   
+             type='primary',
+             use_container_width=True):
+    st.switch_page('pages/ManageSkills.py')
+
+if st.button('Manage Current Courses',   
+             type='primary',
+             use_container_width=True):
+    st.switch_page('pages/ManageCourses.py')

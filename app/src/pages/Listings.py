@@ -28,10 +28,32 @@ if listings:
         st.write(f"Description: {i['description']}")
         st.write(f"Start date: {i['startDate'][6:17]}")
         st.write(f"end date: {i['endDate'][6:17]}")
-        if st.button("View applicants", key=f"view{i['jobId']}"):
-            st.session_state['applicant_job_id'] = i['jobId']
-            st.session_state['applicant_job_name'] = i['position']
-            st.switch_page('pages/viewApplicants.py')
+        col1, col2 = st.columns(2)
+
+        with col1: 
+            if st.button("View applicants", key=f"view{i['jobId']}"):
+                st.session_state['applicant_job_id'] = i['jobId']
+                st.session_state['applicant_job_name'] = i['position']
+                st.switch_page('pages/viewApplicants.py')
+        with col2: 
+            if st.button("Edit Listing", key=f"edit{i['jobId']}"):
+                st.session_state['Edit_job_id'] = i['jobId']
+                st.session_state['Edit_job_desc'] = i['description']
+                st.session_state['Edit_job_startDate'] = i['startDate']
+                st.session_state['Edit_job_endDate'] = i['endDate']
+                st.session_state['Edit_job_name'] = i['position']
+                st.switch_page('pages/EditListing.py')
+        # if "confirm" not in st.session_state:
+        #     st.session_state["confirm"] = False
+        # with col3:
+        #     if st.button("Remvoe Listing" key=f"remove{i['jobId']}") and not st.session_state["confirm"]:
+        #          st.warning("Are you sure you want to perform this action?")
+        #          if st.button("Yes, I'm sure"):
+        #             st.session_state["confirm"] = True
+        #             requests.delete(f"http://api:4000/r/deleteJob/{i['jobId']}")
+        #         elif st.session_state["confirm"]:
+        #             st.success("Listing has been removed!")
+
 
         st.write("---")
     else:
@@ -47,18 +69,6 @@ else:
 
 
 
-# df = pd.DataFrame(
-#     {
-#         "Position": posArray,
-#         "Description": descArray,
-#         "Start date": startDates,
-#         "End date": endDates,
-#     }
-# )
-   
-# st.dataframe(df, hide_index = True)
-
-        
 
 
 

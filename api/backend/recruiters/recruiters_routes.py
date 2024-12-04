@@ -18,6 +18,24 @@ logger = logging.getLogger(__name__)
 # routes.
 recruiters = Blueprint('recruiters', __name__)
 
+#Get all the listings for a recruiter
+@recruiters.route('/allListings', methods=['GET'])
+def get_All_listings():
+    query = f'''
+        SELECT 
+         * from jobs
+    '''
+    
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 
 #Get all the listings for a recruiter
 @recruiters.route('/Listings/<rec_Id>', methods=['GET'])
@@ -40,6 +58,40 @@ def get_listings(rec_Id):
     theData = cursor.fetchall() 
 
     response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+
+
+#Get all the listings for a recruiter
+@recruiters.route('/updateJob/<job_Id>', methods=['PUT'])
+def updateJob(job_Id):
+    job_info = request.json
+
+    position = job_info.get('position')
+    description = job_info.get('description')
+    startDate = job_info.get('startDate')
+    endDate = job_info.get('endDate')
+
+    current_app.logger.info(job_info)
+
+    query = '''
+        UPDATE jobs SET 
+            position = %s,
+            description = %s,
+            startDate= %s,
+            endDate = %s
+            WHERE jobID = %s
+    '''
+    
+    conn = db.get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(query, (position, description, startDate, endDate, job_Id))
+
+    conn.commit()
+
+    response = make_response(jsonify({"message": "Job updated successfully"}))
     response.status_code = 200
     return response
 
