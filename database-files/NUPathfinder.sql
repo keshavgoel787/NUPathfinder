@@ -559,9 +559,9 @@ insert into jobsSkills (jobID, name, proficiency) values (39, 'Firebase', 5);
 insert into jobsSkills (jobID, name, proficiency) values (40, 'Firebase', 3);
 
 -- Insert Sample Data into Applications
-insert into application (studentID, jobID, matchPercent, status) values (7, 7, 44, 'Accepted');
-insert into application (studentID, jobID, matchPercent, status) values (15, 17, 84, 'Interviewing');
-insert into application (studentID, jobID, matchPercent, status) values (11, 18, 78, 'Submitted');
+insert into application (studentID, jobID, matchPercent, status) values (7, 1, 44, 'Accepted');
+insert into application (studentID, jobID, matchPercent, status) values (15, 1, 84, 'Interviewing');
+insert into application (studentID, jobID, matchPercent, status) values (11, 1, 78, 'Submitted');
 insert into application (studentID, jobID, matchPercent, status) values (27, 30, 35, 'Interviewing');
 insert into application (studentID, jobID, matchPercent, status) values (8, 26, 22, 'Accepted');
 insert into application (studentID, jobID, matchPercent, status) values (36, 29, 89, 'Rejected');
