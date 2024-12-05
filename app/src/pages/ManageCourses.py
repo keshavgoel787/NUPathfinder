@@ -68,6 +68,7 @@ for index, row in df.iterrows():
                     response = requests.delete(f"http://api:4000/d/deletecourse/{department_id}/{row['Course Num']}")
                     response.raise_for_status()
                     st.success(f"Successfully deleted {row['Course Name']}.")
+                    st.write(f"Successfully deleted {row['Course Num']}.")
                     st.rerun()
                 except requests.exceptions.RequestException as e:
                     st.error("Failed to delete the course.")

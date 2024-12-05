@@ -151,7 +151,7 @@ def get_Job_Skills():
     query = f'''
         SELECT * from skills;
     '''
-    
+     
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
@@ -313,6 +313,8 @@ def remove_Applicant(JobId, StudentId):
 
         # Commit changes
         conn.commit()
+
+        response = make_response("Successfully blacklisted student")
 
         response.status_code = 200
         return response

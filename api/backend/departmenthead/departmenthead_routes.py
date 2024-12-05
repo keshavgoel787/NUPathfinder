@@ -213,10 +213,10 @@ def update_course_info(department_ID, courseID):
             name = %s,
             description = %s
         WHERE departmentID=%s AND courseID=%s
-    '''
+    ''' 
 
     conn = db.get_db() 
-    cursor = conn.cursor()
+    cursor = conn.cursor() 
 
     cursor.execute(query, (course_name, course_description, department_ID, courseID))
 
