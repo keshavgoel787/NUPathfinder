@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 from modules.nav import SideBarLinks
+from collections import defaultdict
 
 # Configure logging for debugging and information tracking
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
@@ -68,7 +69,21 @@ try:
             "Avg Student Proficiency": avg_student_proficiency
         })
 
-    df_proficiency = pd.DataFrame(proficiency_comparison)
+
+    job_skills_aggregated = defaultdict(list)
+    for job_skill in proficiency_data['job_skills']:
+        job_skills_aggregated[job_skill['name']].append(job_skill['proficiency'])
+
+    aggregated_job_skills = []
+    for skill, proficiencies in job_skills_aggregated.items():
+        aggregated_job_skills.append({
+            "name": skill,
+            "proficiency": sum(proficiencies) / len(proficiencies)  # Average proficiency
+        })
+    
+    df_proficiency = pd.DataFrame(proficiency_comparison).drop_duplicates(subset=["Skill"])
+
+
 
     # Plot the comparison graph
     st.subheader("Proficiency Comparison Between Job and Student Skills")
