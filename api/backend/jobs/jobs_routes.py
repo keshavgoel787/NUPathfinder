@@ -17,7 +17,7 @@ jobs = Blueprint('jobs', __name__)
 # Get all the students from the database, package them up,
 # and return them to the client
 # ------------------------------------------------------------
-# Get all the job listings from the database
+# Get all the details of a job
 @jobs.route('/jobs/<jobID>', methods=['GET'])
 def get_job(jobID):
     query = '''
