@@ -9,7 +9,7 @@ from modules.nav import SideBarLinks
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SideBarLinks()
+SideBarLinks(show_home=True)
 
 # Set the page title
 st.title("Skill Analysis")
@@ -62,11 +62,6 @@ with col2:
         for skill in uncovered_skills:
             st.write(skill)
     
-    
-if st.button('View All Inputted Skills',   
-             type='primary',
-             use_container_width=True):
-    st.switch_page('pages/ManageSkills.py')
 
 if st.button('Manage Current Courses',   
              type='primary',

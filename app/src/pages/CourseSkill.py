@@ -57,5 +57,5 @@ with st.form("add_skill_form"):
 if st.button("Or create a new skill", 
     type = 'primary', 
     use_container_width=True):
-    st.session_state['role'] = 'Dhead'
+    st.session_state['role'] = 'Department_Head'
     st.switch_page('pages/addSkill.py')

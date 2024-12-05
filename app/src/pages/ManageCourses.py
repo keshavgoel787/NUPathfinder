@@ -9,7 +9,7 @@ logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s
 logger = logging.getLogger(__name__)
 
 # Initialize Sidebar
-SideBarLinks()
+SideBarLinks(show_home=True)
 
 # Set the page title
 st.title("Course List")
@@ -62,7 +62,6 @@ for index, row in df.iterrows():
         col1, col2, col3 = st.columns(3)
 
         
-        # Delete course button
         with col1:
             if st.button("Delete Course", key=f"delete{row['Course Num']}"):
                 try:
@@ -74,7 +73,6 @@ for index, row in df.iterrows():
                     st.error("Failed to delete the course.")
                     logger.error(f"Error deleting course {row['Course Num']}: {e}")
 
-        # Update skill button (currently does nothing)
         with col2:
             if st.button("Update Skills", key=f"edit{row['Course Num']}"):
                 st.session_state['Current Course #'] = row['Course Num']

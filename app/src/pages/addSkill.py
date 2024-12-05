@@ -40,7 +40,7 @@ with st.form("Add skill"):
                 response = requests.post("http://api:4000/r/addSkill", json=skill_data)
                 if response.status_code == 200:
                     st.success("Skill added successfully!")
-                    if st.session_state['role'] == 'Dhead':
+                    if st.session_state['role'] == 'Department_Head':
                         st.switch_page('pages/CourseSkill.py')
                     else:
                         st.switch_page('pages/jobSkill.py')
