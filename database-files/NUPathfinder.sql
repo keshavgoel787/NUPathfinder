@@ -251,28 +251,6 @@ CREATE TABLE IF NOT EXISTS UserFeedback (
     FOREIGN KEY (noteID) REFERENCES Notes(noteID)
 );
 
--- SkillsTrend Table
-DROP TABLE IF EXISTS SkillsTrend;
-CREATE TABLE IF NOT EXISTS SkillsTrend (
-    trendID INT AUTO_INCREMENT NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    PRIMARY KEY (trendID),
-    FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
--- IndustryTrend Table
-DROP TABLE IF EXISTS IndustryTrend;
-CREATE TABLE IF NOT EXISTS IndustryTrend (
-    trendID INT NOT NULL,
-    userID INT NOT NULL,
-    trendType VARCHAR(100),
-    dateObserved DATE,
-    PRIMARY KEY (trendID),
-    FOREIGN KEY (trendID) REFERENCES SkillsTrend(trendID),
-    FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
-);
-
 -- Drop the existing SkillGaps view if it exists
 DROP VIEW IF EXISTS SkillGaps;
 -- Create the updated SkillGaps view
@@ -406,18 +384,6 @@ VALUES
 (1, 'Review curriculum for upcoming semester.'),
 (2, 'Discuss research opportunities with faculty.');
 
-
--- Insert Sample Data into SkillsTrend
-INSERT INTO SkillsTrend (name, description)
-VALUES
-('Python', 'Increasing demand for Python skills.'),
-('Data Analysis', 'Data analysis skills are becoming essential.');
-
--- Insert Sample Data into IndustryTrend
-INSERT INTO IndustryTrend (trendID, userID, trendType, dateObserved)
-VALUES
-(1, 1, 'Emerging', '2024-11-05'),
-(2, 2, 'Established', '2024-11-10');
 
 -- Insert Sample Data into Developer
 INSERT INTO Developer (username, firstName, lastName, role, experienceLevel)
