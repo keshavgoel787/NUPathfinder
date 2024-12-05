@@ -131,13 +131,28 @@ def recommend_courses():
 def get_course(department_ID):
     try:
         query = '''
-            SELECT * 
+            SELECT DISTINCT * 
             FROM Courses
-            LEFT JOIN CourseSkills ON CourseSkills.courseID = Courses.courseID
             WHERE Courses.departmentID = %s
         '''
         cursor = db.get_db().cursor()
         cursor.execute(query, (department_ID,))
+        data = cursor.fetchall()
+        return jsonify(data)
+    except Exception as e:
+        current_app.logger.error(f"Error fetching courses: {e}")
+        return make_response("Internal Server Error", 500)
+
+@departmenthead.route('/courseskills/<courseID>', methods=['GET'])
+def get_course_skills(courseID):
+    try:
+        query = '''
+            SELECT * 
+            FROM CourseSkills
+            WHERE courseID = %s
+        '''
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (courseID))
         data = cursor.fetchall()
         return jsonify(data)
     except Exception as e:
@@ -183,3 +198,30 @@ def delete_course(department_ID, courseID):
     except Exception as e:
         current_app.logger.error(f"Error deleting course: {e}")
         return make_response("Internal Server Error", 500)
+
+@departmenthead.route('/updatecourseinfo/<department_ID>/<courseID>', methods = ['PUT'])
+def update_course_info(department_ID, courseID):
+    skill_info = request.json
+
+    course_name = skill_info.get('cname')
+    course_description = skill_info.get('cdescription')
+
+    current_app.logger.info(skill_info)
+
+    query = '''
+        UPDATE Courses SET
+            name = %s,
+            description = %s
+        WHERE departmentID=%s AND courseID=%s
+    '''
+
+    conn = db.get_db() 
+    cursor = conn.cursor()
+
+    cursor.execute(query, (course_name, course_description, department_ID, courseID))
+
+    conn.commit()
+
+    response = make_response(jsonify({"message": "Job updated successfully"}))
+    response.status_code = 200
+    return response

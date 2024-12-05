@@ -36,7 +36,6 @@ if not df.empty:
         'departmentID': 'Department Num',
         'name': 'Course Name',
         'description': 'Course Description',
-        'CourseSkills.name': 'Associated Skills'
     }, inplace=True)
 
 # Display list of courses
@@ -44,11 +43,25 @@ st.subheader('List of Courses')
 for index, row in df.iterrows():
     with st.expander(f"{row['Course Name']}"):
         st.write(f"**Description**: {row['Course Description']}")
-        st.write(f"**Associated Skill**: {row['Associated Skills']}")
+
+        skill_request = requests.get(f'http://api:4000/d/courseskills/{row["Course Num"]}').json()
+
+        if skill_request:
+            st.write("----")
+            st.write("**Skills**")
+            for i in skill_request:
+                st.write(i['name'])
+
+            st.write("----")
+
+        else:
+
+            st.write("No Skills Associated")
 
         # Action buttons
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
+        
         # Delete course button
         with col1:
             if st.button("Delete Course", key=f"delete{row['Course Num']}"):
@@ -67,6 +80,12 @@ for index, row in df.iterrows():
                 st.session_state['Current Course #'] = row['Course Num']
                 st.session_state['Current Course'] = row['Course Name']
                 st.switch_page("pages/CourseSkill.py")
+        
+        with col3:
+            if st.button("Update Course Info", key=f"change{row['Course Num']}"):
+                st.session_state['Current Course #'] = row['Course Num']
+                st.session_state['Current Course'] = row['Course Name']
+                st.switch_page("pages/CourseDesc.py")
 
 # Button to add a new course
 if st.button("Add New Course"):

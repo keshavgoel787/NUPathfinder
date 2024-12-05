@@ -377,7 +377,8 @@ INSERT INTO CourseSkills (courseID, name)
 VALUES
 (1, 'Python'),
 (2, 'Prototyping'),
-(3, 'Java');
+(3, 'Java'),
+(1, 'Prototyping');
 
 -- Insert Sample Data into Notes
 INSERT INTO Notes (userID, content)
