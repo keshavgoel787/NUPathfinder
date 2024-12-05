@@ -356,7 +356,7 @@ insert into Companies (name, employeeNum) values ('Realcube', 7127);
 insert into Companies (name, employeeNum) values ('Bluezoom', 57568);
 
 -- Insert Sample Data into Recruiters
-insert into Recruiters (firstName, lastName, companyID) values ('Hannah', 'Denyer', 1);
+insert into Recruiters (firstName, lastName, companyID) values ('Jane', 'Dough', 1);
 insert into Recruiters (firstName, lastName, companyID) values ('Kimbra', 'Hardway', 2);
 insert into Recruiters (firstName, lastName, companyID) values ('Vanya', 'Bennell', 3);
 insert into Recruiters (firstName, lastName, companyID) values ('Celia', 'Master', 4);
@@ -399,8 +399,8 @@ insert into Recruiters (firstName, lastName, companyID) values ('Vida', 'Rosenfe
 
 -- Insert Sample Data into Jobs
 insert into jobs (position, description, startDate, endDate, recID) values ('Software Engineer', 'Design and implement software solutions', '2024-06-18', '2025-09-23', 1);
-insert into jobs (position, description, startDate, endDate, recID) values ('Data Analyst', 'Analyze and optimize algorithms', '2024-10-31', '2025-11-17', 2);
-insert into jobs (position, description, startDate, endDate, recID) values ('IT Specialist', 'Collaborate with team members on projects', '2024-02-04', '2024-02-13', 3);
+insert into jobs (position, description, startDate, endDate, recID) values ('Data Analyst', 'Analyze and optimize algorithms', '2024-10-31', '2025-11-17', 1);
+insert into jobs (position, description, startDate, endDate, recID) values ('IT Specialist', 'Collaborate with team members on projects', '2024-02-04', '2024-02-13', 1);
 insert into jobs (position, description, startDate, endDate, recID) values ('Data Analyst', 'Design and implement software solutions', '2024-09-29', '2024-02-12', 4);
 insert into jobs (position, description, startDate, endDate, recID) values ('Web Developer', 'Collaborate with team members on projects', '2025-08-12', '2024-12-01', 5);
 insert into jobs (position, description, startDate, endDate, recID) values ('Software Engineer', 'Design and implement software solutions', '2025-07-09', '2024-12-24', 6);
