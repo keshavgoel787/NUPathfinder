@@ -7,7 +7,7 @@ from flask import jsonify
 from flask import make_response
 from flask import current_app
 from backend.db_connection import db
-
+ 
 #------------------------------------------------------------
 # Create a new Blueprint object, which is a collection of 
 # routes.
@@ -18,7 +18,7 @@ developer = Blueprint('developer', __name__)
 def get_data_logs():
     query = f'''
         SELECT *
-        FROM dataLogs
+        FROM DataLogs
         WHERE details IS NULL OR timestamp IS NULL
     '''
     cursor = db.get_db().cursor()
@@ -61,7 +61,7 @@ def update_data_log(log_id):
 def get_user_feedback():
     query = f'''
         SELECT *
-        FROM userFeedback
+        FROM UserFeedback
         WHERE status = 'Active'
     '''
     cursor = db.get_db().cursor()
