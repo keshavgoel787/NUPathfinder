@@ -8,7 +8,7 @@ from modules.nav import SideBarLinks
 st.set_page_config(layout = 'wide')
 
 # Show appropriate sidebar links for the role of the currently logged in user
-SideBarLinks()
+SideBarLinks(show_home=True)
 
 
 st.title(f"Welcome Department Head, {st.session_state['department_ID']}.")
@@ -20,6 +20,11 @@ if st.button('View Skill Gaps',
              type='primary',
              use_container_width=True):
   st.switch_page('pages/Skill_Analysis.py')
+
+if st.button('Manage Courses', 
+             type='primary',
+             use_container_width=True):
+  st.switch_page('pages/ManageCourses.py')
 
 if st.button('Add a Note', 
              type='primary',

@@ -9,7 +9,7 @@ from modules.nav import SideBarLinks
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SideBarLinks()
+SideBarLinks(show_home=True)
 
 
 # Set the page title
