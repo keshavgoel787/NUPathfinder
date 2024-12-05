@@ -281,11 +281,18 @@ WHERE ss.name IS NULL;
 
 
 -- Insert Sample Data into Students
-INSERT INTO students (username, firstName, lastName, major)
+INSERT INTO students (studentID, firstName, lastName, username, major)
 VALUES
-('jdoe', 'John', 'Doe', 'Computer Science'),
-('asmith', 'Alice', 'Smith', 'Data Science'),
-('bwong', 'Brian', 'Wong', 'Mechanical Engineering');
+    (1, 'Laure', 'Zapatero', 'lzapatero0', 'Data Science'),
+    (2, 'Gertrud', 'Pridie', 'gpridie1', 'Cybersecurity'),
+    (3, 'Caye', 'Pettifor', 'cpettifor2', 'Software Engineering'),
+    (4, 'Fulton', 'O''Cullinane', 'focullinane3','Web Development'),
+    (5, 'Gerrilee', 'Clurow', 'gclurow4', 'Cybersecurity'),
+    (6, 'Sibby', 'Emerine', 'semerine5', 'Computer Engineering'),
+    (7, 'Martie', 'Edmans', 'medmans6', 'Computer Science'),
+    (8, 'Monty', 'Holbie', 'mholbie7', 'Data Science'),
+    (9, 'Amargo', 'Pettifor', 'apettifor8', 'Computer Science'),
+    (10, 'Bren', 'Darycott', 'bdarycott9', 'Software Engineering');
 
 -- Insert Sample Data into Companies
 INSERT INTO Companies (name, employeeNum)
@@ -437,3 +444,6 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
+
+SELECT *
+FROM Companies;
