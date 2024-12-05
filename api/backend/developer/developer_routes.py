@@ -16,17 +16,25 @@ developer = Blueprint('developer', __name__)
 # Monitor inconsistencies in data
 @developer.route('/data_logs', methods=['GET'])
 def get_data_logs():
-    query = f'''
-        SELECT *
-        FROM DataLogs
-        WHERE details IS NULL OR timestamp IS NULL
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
+    try:
+        query = '''
+            SELECT *
+            FROM DataLogs
+            WHERE details IS NULL OR timestamp IS NULL
+        '''
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        theData = cursor.fetchall()
+        current_app.logger.info(f"Fetched {len(theData)} inconsistent data logs")
+        response = make_response(jsonify(theData))
+        response.status_code = 200
+        return response
+    except Exception as e:
+        current_app.logger.error(f"Error fetching data logs: {str(e)}")
+        response = make_response(jsonify({"error": "Failed to fetch data logs"}))
+        response.status_code = 500
+        return response
+
 
 # Fix data log inconsistencies
 @developer.route('/data_logs/<log_id>', methods=['PUT'])
@@ -57,19 +65,27 @@ def update_data_log(log_id):
     
 
 # View user feedback
-@developer.route('/user_feedback', methods =['GET'])
+@developer.route('/user_feedback', methods=['GET'])
 def get_user_feedback():
-    query = f'''
-        SELECT *
-        FROM UserFeedback
-        WHERE status = 'Active'
-    '''
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    theData = cursor.fetchall()
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
+    try:
+        query = '''
+            SELECT *
+            FROM UserFeedback
+            WHERE rating >= 3
+        '''
+        cursor = db.get_db().cursor()
+        cursor.execute(query)
+        theData = cursor.fetchall()
+        current_app.logger.info(f"Fetched {len(theData)} user feedback entries")
+        response = make_response(jsonify(theData))
+        response.status_code = 200
+        return response
+    except Exception as e:
+        current_app.logger.error(f"Error fetching user feedback: {str(e)}")
+        response = make_response(jsonify({"error": "Failed to fetch user feedback"}))
+        response.status_code = 500
+        return response
+
 
 # Automated test results
 @developer.route('/test_results', methods=['POST'])
@@ -93,6 +109,34 @@ def log_test_results():
     response = make_response("Successfully logged test results")
     response.status_code = 200
     return response
+
+# retrieve Documentation
+@developer.route('/documentation/<doc_id>', methods=['GET'])
+def get_documentation(doc_id):
+    try:
+        query = '''
+            SELECT *
+            FROM Documentation
+            WHERE docID = %s
+        '''
+        cursor = db.get_db().cursor()
+        cursor.execute(query, (doc_id,))
+        theData = cursor.fetchone()
+        if theData:
+            current_app.logger.info(f"Fetched documentation for docID {doc_id}")
+            response = make_response(jsonify(theData))
+            response.status_code = 200
+            return response
+        else:
+            response = make_response(jsonify({"error": "Documentation not found"}))
+            response.status_code = 404
+            return response
+    except Exception as e:
+        current_app.logger.error(f"Error fetching documentation: {str(e)}")
+        response = make_response(jsonify({"error": "Failed to get documentation"}))
+        response.status_code = 500
+        return response
+
 
 # Update Documentation
 @developer.route('/documentation/<doc_id>', methods=['PUT'])
@@ -121,7 +165,7 @@ def update_documentation(doc_id):
 @developer.route('/interaction_data', methods=['DELETE'])
 def archive_interaction_data():
     query = '''
-        DELETE FROM interactionData
+        DELETE FROM DataLogs
         WHERE timestamp < NOW() - INTERVAL 1 YEAR
     '''
     cursor = db.get_db().cursor()
