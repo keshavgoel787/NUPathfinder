@@ -59,6 +59,20 @@ def get_student_skills(studentID):
     response.status_code = 200
     return response
 
+@students.route('/allstudentskills', methods=['GET'])
+def get_all_student_skills():
+    query = '''
+        SELECT *
+        FROM studentSkills
+    '''
+    current_app.logger.info(f'GET /allstudentSkills query={query}')
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    theData = cursor.fetchall()
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 # ------------------------------------------------------------
 # Add a new skill to a student
 @students.route('/studentSkills/<studentID>', methods=['POST'])
@@ -231,3 +245,4 @@ def submit_application(studentID):
         response.status_code = 500
 
     return response
+ 

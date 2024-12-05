@@ -63,6 +63,15 @@ def listingsNav():
 def addingNav():
     st.sidebar.page_link('pages/Listings.py', label = 'View Listings', icon = "👁️")
 
+def courseNav():
+    st.sidebar.page_link('pages/ManageCourses.py', label = 'Manage Courses', icon = "✏️")
+
+def notepad():
+    st.sidebar.page_link('pages/Notes.py', label = 'Notepad', icon = "🗒️" )
+
+def skillgaps():
+    st.sidebar.page_link('pages/Skill_Analysis.py', label = 'View Skill Analysis', icon = "📈")
+
 
 # --------------------------------Links Function -----------------------------------------------
 def SideBarLinks(show_home=False):
@@ -104,8 +113,10 @@ def SideBarLinks(show_home=False):
         if st.session_state["role"] == "administrator":
             AdminPageNav()
         
-        if st.session_state['role'] == 'department_head':
-            Reorders()
+        if st.session_state['role'] == 'Department_Head':
+            courseNav()
+            notepad()
+            skillgaps()
 
     # Always show the About page at the bottom of the list of links
     AboutPageNav()

@@ -273,11 +273,24 @@ CREATE TABLE IF NOT EXISTS IndustryTrend (
     FOREIGN KEY (userID) REFERENCES DepartmentHead(userID)
 );
 
+-- Drop the existing SkillGaps view if it exists
+DROP VIEW IF EXISTS SkillGaps;
+-- Create the updated SkillGaps view
 CREATE OR REPLACE VIEW SkillGaps AS
-SELECT js.name AS skill_name
-FROM jobsSkills js
-LEFT JOIN studentSkills ss ON js.name = ss.name
-WHERE ss.name IS NULL;
+SELECT
+    js.name AS skill_name
+FROM
+    jobsSkills js
+LEFT JOIN
+    studentSkills ss
+ON
+    js.name = ss.name
+GROUP BY
+    js.name, js.proficiency
+HAVING
+    AVG(ss.proficiency) IS NULL -- Include skills not present in studentSkills
+    OR ABS(js.proficiency - AVG(ss.proficiency)) > 0.5; -- Include skills with proficiency mismatch
+
 
 
 -- Insert Sample Data into Students
@@ -335,7 +348,7 @@ VALUES
 -- Insert Sample Data into Job Skills
 INSERT INTO jobsSkills (jobID, name, proficiency)
 VALUES
-(1, 'Python', 1),
+(1, 'Python', 4),
 (2, 'Data Analysis', 4),
 (3, 'Prototyping', 3),
 (4, 'Java', 2);
@@ -348,7 +361,7 @@ VALUES
 (2, 2, 90, 'Interviewing'),
 (3, 3, 75, 'Submitted');
 
--- Insert Sample Data into Experiences 
+-- Insert Sample Data into Experiences
 INSERT INTO experiences (title, Username, review, rating, jobID)
 VALUES
 ('Web Development Project', 1, 'Worked on building scalable web apps.', 5, 1),
@@ -444,6 +457,3 @@ INSERT INTO Testing (featureID, testType, result, runDate)
 VALUES
 (1, 'Regression Testing', 'Passed', '2024-11-19'),
 (2, 'Integration Testing', 'Passed', '2024-11-20');
-
-SELECT *
-FROM Companies;
