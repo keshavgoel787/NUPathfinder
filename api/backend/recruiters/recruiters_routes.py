@@ -192,8 +192,6 @@ def addSkillJob():
     return response
 
 
-
-
 @recruiters.route("/addSkill", methods = ['POST'])
 def addSkill():
     the_data = request.json
@@ -219,6 +217,7 @@ def addSkill():
     response = make_response("Successfully added skill")
     response.status_code = 200
     return response
+
 @recruiters.route('/deleteJob/<int:jobId>', methods=['DELETE'])
 def remove_Job(jobId):
     current_app.logger.info(f"Attempting to delete Job ID: {jobId}")

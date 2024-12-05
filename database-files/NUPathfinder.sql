@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS CourseSkills (
     courseID INT NOT NULL,
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (courseID, name),
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (courseID) REFERENCES Courses(courseID),
     FOREIGN KEY (name) REFERENCES skills(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -341,7 +341,7 @@ VALUES
 (2, 2, 90, 'Interviewing'),
 (3, 3, 75, 'Submitted');
 
--- Insert Sample Data into Experiences
+-- Insert Sample Data into Experiences 
 INSERT INTO experiences (title, Username, review, rating, jobID)
 VALUES
 ('Web Development Project', 1, 'Worked on building scalable web apps.', 5, 1),

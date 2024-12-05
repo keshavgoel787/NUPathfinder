@@ -225,3 +225,23 @@ def update_course_info(department_ID, courseID):
     response = make_response(jsonify({"message": "Job updated successfully"}))
     response.status_code = 200
     return response
+
+@departmenthead.route('/addcourseskill/<courseID>', methods = ['POST'])
+def add_course_skil(courseID):
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    name = the_data['skill_name']
+
+    query = '''
+        INSERT INTO CourseSkills(courseID, name)
+        VALUES (%s, %s)
+    '''
+    current_app.logger.info(query)
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (courseID, name))
+    db.get_db().commit()
+
+    response = make_response("Successfully added skill")
+    response.status_code = 200
+    return response

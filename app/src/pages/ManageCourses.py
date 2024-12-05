@@ -76,7 +76,7 @@ for index, row in df.iterrows():
 
         # Update skill button (currently does nothing)
         with col2:
-            if st.button("Update Skill", key=f"edit{row['Course Num']}"):
+            if st.button("Update Skills", key=f"edit{row['Course Num']}"):
                 st.session_state['Current Course #'] = row['Course Num']
                 st.session_state['Current Course'] = row['Course Name']
                 st.switch_page("pages/CourseSkill.py")

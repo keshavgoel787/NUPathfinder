@@ -1,4 +1,4 @@
-import logging
+import logging 
 logger = logging.getLogger(__name__)
 
 import pandas as pd
@@ -13,6 +13,7 @@ st.set_page_config(layout = 'wide')
 SideBarLinks()
 
 st.title("Add new skill")
+
 
 with st.form("Add skill"):
 
@@ -39,7 +40,10 @@ with st.form("Add skill"):
                 response = requests.post("http://api:4000/r/addSkill", json=skill_data)
                 if response.status_code == 200:
                     st.success("Skill added successfully!")
-                    st.switch_page('pages/jobSkill.py')
+                    if st.session_state['role'] == 'Dhead':
+                        st.switch_page('pages/CourseSkill.py')
+                    else:
+                        st.switch_page('pages/jobSkill.py')
                 else:
                     st.error(f"Error adding skill: {response.text}")
             except requests.exceptions.RequestException as e:
