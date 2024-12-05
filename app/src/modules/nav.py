@@ -26,42 +26,7 @@ def JobListingNav():
         "pages/Job_Listings.py", label="Job Listings", icon="🏢"
     )
 
-
-## ------------------------ Examples for Role of usaid_worker ------------------------
-def ApiTestNav():
-    st.sidebar.page_link("pages/12_API_Test.py", label="Test the API", icon="🛜")
-
-
-def PredictionNav():
-    st.sidebar.page_link(
-        "pages/11_Prediction.py", label="Regression Prediction", icon="📈"
-    )
-
-
-def ClassificationNav():
-    st.sidebar.page_link(
-        "pages/13_Classification.py", label="Classification Demo", icon="🌺"
-    )
-
-
-#### ------------------------ System Admin Role ------------------------
-def AdminPageNav():
-    st.sidebar.page_link("pages/20_Admin_Home.py", label="System Admin", icon="🖥️")
-    st.sidebar.page_link(
-        "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🏢"
-    )
-
-def Reorders():
-    st.sidebar.page_link('pages/41_Reorders.py', label='Reorders')
-
-
-###---------------------------Listings Side bar --------------------------
-def listingsNav():
-    st.sidebar.page_link('pages/AddListings.py', label = 'Add Listing', icon = "➕")
-
-###---------------------------Adding Side bar --------------------------
-def addingNav():
-    st.sidebar.page_link('pages/Listings.py', label = 'View Listings', icon = "👁️")
+####---------------------------Dhead Side bar --------------------------
 
 def courseNav():
     st.sidebar.page_link('pages/ManageCourses.py', label = 'Manage Courses', icon = "✏️")
@@ -71,6 +36,32 @@ def notepad():
 
 def skillgaps():
     st.sidebar.page_link('pages/Skill_Analysis.py', label = 'View Skill Analysis', icon = "📈")
+
+
+###---------------------------Listings Side bar --------------------------
+def listingsNav():
+    st.sidebar.page_link('pages/AddListings.py', label = 'Add Listing', icon = "➕")
+
+
+###---------------------------Admin Side bar --------------------------
+def test():
+    st.sidebar.page_link('pages/Manage_Testing.py', label = 'Manage Testing', icon = "🧠")
+
+def feedback():
+     st.sidebar.page_link('pages/Manage_Feedback.py', label = 'Manage Feedback', icon = "🗒️")
+
+def logs():
+    st.sidebar.page_link('pages/View_DataLogs.py', label = 'View Datalogs', icon = "👁️")
+
+
+
+###---------------------------Adding Side bar --------------------------
+def addingNav():
+    st.sidebar.page_link('pages/Listings.py', label = 'View Listings', icon = "👁️")
+
+
+
+
 
 
 # --------------------------------Links Function -----------------------------------------------
@@ -108,15 +99,17 @@ def SideBarLinks(show_home=False):
             elif st.session_state["recState"] == "adding":
                 listingsNav()
                 addingNav()
-
-        # If the user is an administrator, give them access to the administrator pages
-        if st.session_state["role"] == "administrator":
-            AdminPageNav()
         
         if st.session_state['role'] == 'Department_Head':
             courseNav()
             notepad()
             skillgaps()
+        
+        if st.session_state['role'] == 'administrator':
+            test()
+            feedback()
+            logs()
+            
 
     # Always show the About page at the bottom of the list of links
     AboutPageNav()

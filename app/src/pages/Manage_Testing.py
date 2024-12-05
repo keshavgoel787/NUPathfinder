@@ -1,6 +1,12 @@
 import streamlit as st
+from modules.nav import SideBarLinks
+
+
+
 
 st.set_page_config(layout='wide')
+SideBarLinks(show_home=True)
+
 st.title("Manage Testing")
 st.write("Log automated test results and view testing history.")
 

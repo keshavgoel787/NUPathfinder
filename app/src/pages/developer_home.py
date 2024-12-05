@@ -16,10 +16,10 @@ st.write("### What would you like to do today?")
 
 # Navigation buttons
 if st.button('View Data Logs', type='primary', use_container_width=True):
-    st.switch_page('View_DataLogs')
+    st.switch_page('pages/View_DataLogs.py')
 
 if st.button('Manage Testing', type='primary', use_container_width=True):
-    st.switch_page('Manage_Testing')
+    st.switch_page('pages/Manage_Testing.py')
 
 if st.button('Manage User Feedback', type='primary', use_container_width=True):
-    st.switch_page('Manage_Feedback')
+    st.switch_page('pages/Manage_Feedback.py')
