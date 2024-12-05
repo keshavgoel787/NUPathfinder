@@ -162,6 +162,24 @@ def get_Job_Skills():
     response.status_code = 200
     return response
 
+  
+@recruiters.route('/jobskills', methods=['GET'])
+def get_jobskills():
+    query = f'''
+        SELECT * 
+        FROM jobsSkills
+    '''
+    
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
 #add a job to the jobs table in the database
 @recruiters.route("/addSkillJob", methods = ['POST'])
 def addSkillJob():
