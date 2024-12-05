@@ -19,25 +19,6 @@ logger = logging.getLogger(__name__)
 recruiters = Blueprint('recruiters', __name__)
 
 #Get all the listings for a recruiter
-@recruiters.route('/allListings', methods=['GET'])
-def get_All_listings():
-    query = f'''
-        SELECT 
-         * from jobs
-    '''
-    
-    cursor = db.get_db().cursor()
-
-    cursor.execute(query)
-
-    theData = cursor.fetchall() 
-
-    response = make_response(jsonify(theData))
-    response.status_code = 200
-    return response
-
-
-#Get all the listings for a recruiter
 @recruiters.route('/Listings/<rec_Id>', methods=['GET'])
 def get_listings(rec_Id):
     query = f'''
@@ -50,7 +31,6 @@ def get_listings(rec_Id):
          from jobs 
          where recID = {str(rec_Id)}
     '''
-    
     cursor = db.get_db().cursor()
 
     cursor.execute(query)
@@ -99,7 +79,7 @@ def updateJob(job_Id):
 @recruiters.route('/applicants/<Job_id>', methods={'GET'})
 def get_Applicants(Job_id):
     query = f'''
-        select s. studentId, s.firstName, s.lastName, s.major, application.matchPercent,
+        select s.studentId, s.firstName, s.lastName, s.major, application.matchPercent,
         application.status, application.dateOfApplication from application
             JOIN students s on application.studentID = s.studentID
     where jobID = {str(Job_id)}
@@ -171,6 +151,24 @@ def get_Job_Skills():
     query = f'''
         SELECT * from skills;
     '''
+     
+    cursor = db.get_db().cursor()
+
+    cursor.execute(query)
+
+    theData = cursor.fetchall() 
+
+    response = make_response(jsonify(theData))
+    response.status_code = 200
+    return response
+
+  
+@recruiters.route('/jobskills', methods=['GET'])
+def get_jobskills():
+    query = f'''
+        SELECT * 
+        FROM jobsSkills
+    '''
     
     cursor = db.get_db().cursor()
 
@@ -212,8 +210,6 @@ def addSkillJob():
     return response
 
 
-
-
 @recruiters.route("/addSkill", methods = ['POST'])
 def addSkill():
     the_data = request.json
@@ -239,3 +235,90 @@ def addSkill():
     response = make_response("Successfully added skill")
     response.status_code = 200
     return response
+
+@recruiters.route('/deleteJob/<int:jobId>', methods=['DELETE'])
+def remove_Job(jobId):
+    current_app.logger.info(f"Attempting to delete Job ID: {jobId}")
+    try:
+        # SQL query with parameterized input
+        query = "DELETE FROM jobs WHERE jobId = %s"
+        query2 = "DELETE FROM application WHERE jobId = %s"
+        query3 = "DELETE FROM experiences WHERE jobId = %s"
+        query4 = "DELETE FROM jobsSkills WHERE jobId = %s"
+
+        # Database connection
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        # Execute the query
+        cursor.execute(query2, (jobId))
+        cursor.execute(query3, (jobId))
+        cursor.execute(query4, (jobId))
+        cursor.execute(query, (jobId))
+
+        # Commit changes
+        conn.commit()
+
+        response = make_response("Successfully added skill")
+        response.status_code = 200
+        return response
+    except:
+        conn.rollback()
+        current_app.logger.error(f"Error deleting Job ID {jobId}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+@recruiters.route("/blackList/", methods = ['POST'])
+def blacklist_Student():
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    studentId = the_data['studentId']
+    recId = the_data['recId']
+
+
+    query = '''
+       INSERT INTO BlackListed (recID, studentID)
+        VALUES
+        (%s, %s);
+    '''
+
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query, (recId, studentId))
+
+    db.get_db().commit()
+    
+    response = make_response("Successfully blacklisted student")
+    response.status_code = 200
+    return response
+
+
+@recruiters.route("/removeApp/<JobId>/<StudentId>", methods = ['DELETE'])
+def remove_Applicant(JobId, StudentId):
+
+    current_app.logger.info(f"Attempting to delete with jobId={JobId} and StudentId={StudentId}")
+    try:
+        query = "DELETE FROM application WHERE jobId = %s and studentId = %s"
+    
+    # Database connection
+        conn = db.get_db()
+        cursor = conn.cursor()
+
+        # Execute the query
+        cursor.execute(query, (JobId, StudentId))
+
+        # Commit changes
+        conn.commit()
+
+        response = make_response("Successfully blacklisted student")
+
+        response.status_code = 200
+        return response
+    except Exception as e:
+        conn.rollback()
+        current_app.logger.error(f"Error deleting student ID {JobId}: {e}")
+        return jsonify({"error": str(e)}), 500

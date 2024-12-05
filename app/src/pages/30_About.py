@@ -16,3 +16,8 @@ st.markdown (
     Stay tuned for more information and features to come!
     """
         )
+
+if st.button('Back Home',   
+             type='primary',
+             use_container_width=True):
+    st.switch_page('Home.py')

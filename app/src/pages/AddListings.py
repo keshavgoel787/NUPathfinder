@@ -4,8 +4,6 @@ logger = logging.getLogger(__name__)
 import pandas as pd
 import streamlit as st
 import requests
-import array
-import datetime
 from modules.nav import SideBarLinks
 
 st.set_page_config(layout = 'wide')
@@ -13,9 +11,6 @@ st.set_page_config(layout = 'wide')
 SideBarLinks()
 
 st.title(f"Add a new job listing, {st.session_state['first_name']}.")
-
-
-
 
 with st.form("add_listing_form"):
     
@@ -61,11 +56,13 @@ with st.form("add_listing_form"):
             logger.info(f"Listing form submitted with data: {listing_data}")
             
             # Now, we try to make a POST request to the proper end point
+          
             try:
                 url = f"http://api:4000/r/addJob/{st.session_state['rec_id']}"
                 response = requests.post(url, json=listing_data)
                 if response.status_code == 200:
                     st.success("listing added successfully!")
+                    st.switch_page("pages/Listings.py")
                 else:
                     st.error(f"Error adding listing: {response.text}")
             except requests.exceptions.RequestException as e:

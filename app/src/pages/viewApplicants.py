@@ -12,7 +12,7 @@ st.set_page_config(layout = 'wide')
 
 applicants = requests.get(f"http://api:4000/r/applicants/{st.session_state['applicant_job_id']}").json()
 
-
+stIdArr =[]
 firstArr = []
 lastArr = []
 majorArr = []
@@ -21,6 +21,7 @@ statusArr = []
 dateArr = []
 
 for i in applicants:
+    stIdArr.append(i['studentId'])
     firstArr.append(i['firstName'])
     lastArr.append(i['lastName'])
     majorArr.append(i['major'])
@@ -29,6 +30,7 @@ for i in applicants:
     dateArr.append(i['dateOfApplication'][5:17])
 
 data = {
+    "Id" : stIdArr,
     "First Name" : firstArr,
     "Last Name" : lastArr,
     "Major" : majorArr,
@@ -40,7 +42,7 @@ data = {
 
 
 # Convert data to DataFrame
-df = pd.DataFrame(data)
+df = pd.DataFrame(data) #, columns = ("First Name", "Last Name", "Major", "Match Percent", "Application Status", "Date of Application"))
 
 # Streamlit UI
 st.subheader(f"Job Applicants Dashboard for {st.session_state['applicant_job_name']}.")
@@ -81,6 +83,32 @@ for _, row in sorted_df.iterrows():
         st.write(f"**Application Status:** {row['Application Status']}")
         st.write(f"**Date of Application:** {row['Date of Application']}")
 
+        student_id = row['Id']
+        studentSkills = requests.get(f"http://api:4000/r/applicants/skills/{student_id}").json()
 
-        applicants = requests.get(f"http://api:4000/r/applicants/{st.session_state['applicant_job_id']}").json()
-        #add skills
+        st.write("**Skills:**")
+        for skill in studentSkills:
+            st.write(f"- {skill['name']} || {'⭐' * skill['proficiency']}")
+        if st.button("Blacklist student", key = f"profile-{student_id}"):
+            try:
+                    url = f"http://api:4000/r/blackList"
+                    data = {
+                        'studentId': row['Id'],
+                        'recId': st.session_state["rec_id"]
+                    }
+                    response = requests.post(url, json=data)
+                    if response.status_code == 200:
+                        st.success("student added successfully!")
+                    else:
+                        st.error(f"Error adding listing: {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"Error connecting to server: {str(e)}")
+
+            url = f"http://api:4000/r/Listings/{st.session_state['rec_id']}"
+
+            listings = requests.get(url).json()
+
+            for i in listings:
+                response2 = requests.delete(f"http://api:4000/r/removeApp/{i['jobId']}/{row['Id']}")
+                st.success("student removed successfully!")
+            st.switch_page("pages/viewApplicants.py")

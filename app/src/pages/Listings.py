@@ -26,9 +26,9 @@ if listings:
     for i in listings:
         st.write(f"Position: {i['position']}")
         st.write(f"Description: {i['description']}")
-        st.write(f"Start date: {i['startDate'][6:17]}")
-        st.write(f"end date: {i['endDate'][6:17]}")
-        col1, col2 = st.columns(2)
+        st.write(f"Start date: {i['startDate'][5:17]}")
+        st.write(f"End date: {i['endDate'][5:17]}")
+        col1, col2, col3 = st.columns(3)
 
         with col1: 
             if st.button("View applicants", key=f"view{i['jobId']}"):
@@ -43,17 +43,16 @@ if listings:
                 st.session_state['Edit_job_endDate'] = i['endDate']
                 st.session_state['Edit_job_name'] = i['position']
                 st.switch_page('pages/EditListing.py')
-        # if "confirm" not in st.session_state:
-        #     st.session_state["confirm"] = False
-        # with col3:
-        #     if st.button("Remvoe Listing" key=f"remove{i['jobId']}") and not st.session_state["confirm"]:
-        #          st.warning("Are you sure you want to perform this action?")
-        #          if st.button("Yes, I'm sure"):
-        #             st.session_state["confirm"] = True
-        #             requests.delete(f"http://api:4000/r/deleteJob/{i['jobId']}")
-        #         elif st.session_state["confirm"]:
-        #             st.success("Listing has been removed!")
-
+        if "confirm" not in st.session_state:
+            st.session_state["confirm"] = False
+        with col3:
+            if st.button("Remove listing", key=f"remove{i['jobId']}"):
+                response = requests.delete(f"http://api:4000/r/deleteJob/{i['jobId']}")
+                if response.status_code == 200:
+                    st.success(f"Listing for {i['position']} successfully removed!")
+                    st.switch_page("pages/Listings.py")
+                else:
+                    st.error(f"Failed to delete listing: {response.status_code}, {response.text}")
 
         st.write("---")
     else:
