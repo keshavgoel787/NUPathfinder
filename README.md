@@ -16,11 +16,11 @@ An advanced way for Northeastern Students, Recruiters, Department Heads, and Dev
 stored in /api 
 
 SECRET_KEY=someCrazyS3cR3T!Key.!
-DB_USER=root
-DB_HOST=db
-DB_PORT=3306
-DB_NAME=NUPathfinder
-MYSQL_ROOT_PASSWORD=password
+DB_USER=root  
+DB_HOST=db  
+DB_PORT=3306  
+DB_NAME=NUPathfinder  
+MYSQL_ROOT_PASSWORD=password  
 
 ## Personas
 1. Persona 1: The Student Persona
